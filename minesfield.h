@@ -10,9 +10,6 @@ class MinesField : public QWidget
 public:
     explicit MinesField(unsigned width, unsigned height, QWidget *parent = 0);
 
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void wheelEvent(QWheelEvent *event);
     void updatePixmap();
 
     QSize sizeHint() const;
@@ -20,6 +17,11 @@ public:
 signals:
 
 public slots:
+
+protected:
+    void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 private:
     class Cell
