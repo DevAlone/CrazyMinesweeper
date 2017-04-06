@@ -1,27 +1,14 @@
 #ifndef MINESFIELD_H
 #define MINESFIELD_H
 
-#include <QWidget>
-#include <QtWidgets>
+#include "size.h"
 
-class MinesField : public QWidget
+#include <vector>
+
+class MinesField
 {
-    Q_OBJECT
 public:
-    explicit MinesField(unsigned width, unsigned height, QWidget *parent = 0);
-
-    void updatePixmap();
-
-    QSize sizeHint() const;
-
-signals:
-
-public slots:
-
-protected:
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    MinesField(unsigned rows, unsigned cols);
 
 private:
     class Cell
@@ -69,19 +56,15 @@ private:
         unsigned char data = 0;
     };
     std::vector<Cell> cells;
-//    std::vector<bool> mines;
-//    std::vector<int> minesAround;
-//    std::vector<CellState> cells;
     unsigned minesCount;
     unsigned rows;
     unsigned cols;
     double minesPercents;
 
-    QSize cellSize;
-    QSize borderSize;
+    Size cellSize;
+    Size borderSize;
 
-    QPixmap pixmap;
-    QRect viewport;
+    Size fieldSize;
 };
 
 #endif // MINESFIELD_H

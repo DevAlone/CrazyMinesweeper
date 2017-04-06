@@ -26,10 +26,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    minesfield.cpp
+    minesfield.cpp \
+    build-minesweeper-Desktop-Debug/moc_mainwindow.cpp \
+    build-minesweeper-Desktop-Debug/moc_minesfield.cpp \
+    minesfieldwidget.cpp \
+    minesfield.cpp \
+    size.cpp
 
 HEADERS  += mainwindow.h \
-    minesfield.h
+    minesfield.h \
+    build-minesweeper-Desktop-Debug/ui_mainwindow.h \
+    minesfieldwidget.h \
+    minesfield.h \
+    size.h
 
 FORMS    += mainwindow.ui
 

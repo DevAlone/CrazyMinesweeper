@@ -50,13 +50,23 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../main.cpp \
 		../mainwindow.cpp \
-		../minesfield.cpp moc_mainwindow.cpp \
-		moc_minesfield.cpp
+		../minesfield.cpp \
+		moc_mainwindow.cpp \
+		moc_minesfield.cpp \
+		../minesfieldwidget.cpp \
+		../minesfield.cpp \
+		../size.cpp moc_mainwindow.cpp \
+		moc_minesfieldwidget.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		minesfield.o \
 		moc_mainwindow.o \
-		moc_minesfield.o
+		moc_minesfield.o \
+		minesfieldwidget.o \
+		minesfield.o \
+		size.o \
+		moc_mainwindow.o \
+		moc_minesfieldwidget.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -118,9 +128,18 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../../minesweeper.pro ../mainwindow.h \
-		../minesfield.h ../main.cpp \
+		../minesfield.h \
+		ui_mainwindow.h \
+		../minesfieldwidget.h \
+		../minesfield.h \
+		../size.h ../main.cpp \
 		../mainwindow.cpp \
-		../minesfield.cpp
+		../minesfield.cpp \
+		moc_mainwindow.cpp \
+		moc_minesfield.cpp \
+		../minesfieldwidget.cpp \
+		../minesfield.cpp \
+		../size.cpp
 QMAKE_TARGET  = minesweeper
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = minesweeper
@@ -294,8 +313,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../mainwindow.h ../minesfield.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../minesfield.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../mainwindow.h ../minesfield.h ui_mainwindow.h ../minesfieldwidget.h ../minesfield.h ../size.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../minesfield.cpp moc_mainwindow.cpp moc_minesfield.cpp ../minesfieldwidget.cpp ../minesfield.cpp ../size.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../mainwindow.ui $(DISTDIR)/
 
 
@@ -319,14 +338,16 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_minesfield.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_minesfieldwidget.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_minesfield.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_minesfieldwidget.cpp
 moc_mainwindow.cpp: ../mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../mainwindow.h -o moc_mainwindow.cpp
 
-moc_minesfield.cpp: ../minesfield.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../minesfield.h -o moc_minesfield.cpp
+moc_minesfieldwidget.cpp: ../minesfield.h \
+		../size.h \
+		../minesfieldwidget.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../minesfieldwidget.h -o moc_minesfieldwidget.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -347,21 +368,41 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 ####### Compile
 
 main.o: ../main.cpp ../mainwindow.h \
-		../minesfield.h
+		../minesfield.h \
+		../size.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../main.cpp
 
 mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
-minesfield.o: ../minesfield.cpp ../minesfield.h
+minesfield.o: ../minesfield.cpp ../minesfield.h \
+		../size.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfield.o ../minesfield.cpp
 
-moc_mainwindow.o: moc_mainwindow.cpp 
+moc_mainwindow.o: moc_mainwindow.cpp ../mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
-moc_minesfield.o: moc_minesfield.cpp 
+moc_minesfield.o: moc_minesfield.cpp ../minesfield.h \
+		../size.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_minesfield.o moc_minesfield.cpp
+
+minesfieldwidget.o: ../minesfieldwidget.cpp ../minesfield.h \
+		../size.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfieldwidget.o ../minesfieldwidget.cpp
+
+minesfield.o: ../minesfield.cpp ../minesfield.h \
+		../size.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfield.o ../minesfield.cpp
+
+size.o: ../size.cpp ../size.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o size.o ../size.cpp
+
+moc_mainwindow.o: moc_mainwindow.cpp ../mainwindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_minesfieldwidget.o: moc_minesfieldwidget.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_minesfieldwidget.o moc_minesfieldwidget.cpp
 
 ####### Install
 
