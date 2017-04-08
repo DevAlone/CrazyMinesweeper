@@ -1,6 +1,9 @@
 #include "minesfield.h"
 
+#include <QDebug>
 #include <algorithm>
+#include <queue>
+#include <set>
 
 MinesField::MinesField(unsigned rows, unsigned cols)
     : rows(rows)
@@ -56,6 +59,56 @@ MinesField::MinesField(unsigned rows, unsigned cols)
     //    }
 }
 
+void MinesField::tryToOpenCell(const Point& point)
+{
+    unsigned cellIndex = getCellIndex(point);
+
+    if (!isCellIndexValid(cellIndex))
+        return;
+    Cell* cell = &cells.at(cellIndex);
+
+    cell->setCellState(Cell::CellState::Opened);
+    if (cell->isMine()) {
+        // TODO: lose game
+    } else {
+        //        cell.setCellState(Cell::CellState::Opened);
+        std::queue<unsigned> cellsQueue;
+        std::set<unsigned> usedCells;
+        cellsQueue.push(cellIndex);
+        usedCells.insert(cellIndex);
+
+        qDebug() << "start opening...";
+        while (!cellsQueue.empty()) {
+            cellIndex = cellsQueue.front();
+            cellsQueue.pop();
+            cell = &cells.at(cellIndex);
+            qDebug() << "cell " << cellIndex << "(" << getCellPoint(cellIndex).x() << "," << getCellPoint(cellIndex).y() << ")";
+            if (!cell->isMine()) {
+                cell->setCellState(Cell::CellState::Opened);
+                if (cell->minesAround() == 0) {
+                    qDebug() << "minesAround == 0";
+                    auto aroundCells = getAroundCells(getCellPoint(cellIndex));
+
+                    for (auto cell : aroundCells) {
+                        unsigned index = getCellIndex(cell);
+                        qDebug() << "cell around" << index << "(" << cell.x() << "," << cell.y() << ")";
+                        if (usedCells.find(index) == usedCells.end()) {
+                            qDebug() << "push this";
+                            cellsQueue.push(index);
+                            usedCells.insert(index);
+                        }
+                    }
+                }
+            }
+            qDebug() << "\n\n";
+        }
+    }
+    //    qDebug() << "!";
+    //    for (auto val : result)
+    //        qDebug() << val.x() << val.y();
+    //    qDebug() << "?";
+}
+
 unsigned MinesField::getMinesCount() const
 {
     return minesCount;
@@ -79,4 +132,48 @@ double MinesField::getMinesPercents() const
 std::vector<Cell>& MinesField::getCells()
 {
     return cells;
+}
+
+unsigned MinesField::getCellIndex(const Point& cell) const
+{
+    return cell.y() * cols + cell.x();
+}
+
+Point MinesField::getCellPoint(unsigned index) const
+{
+    int y = index / cols;
+    int x = index - y * cols;
+    return Point(x, y);
+}
+
+bool MinesField::isCellIndexValid(unsigned index) const
+{
+    return index >= 0 && index < cells.size();
+}
+
+std::vector<Point> MinesField::getAroundCells(const Point& cell) const
+{
+    int x = cell.x();
+    int y = cell.y();
+
+    std::vector<Point> result;
+    result.reserve(8);
+    if (x > 0 && y > 0)
+        result.push_back(Point(x - 1, y - 1));
+    if (y > 0)
+        result.push_back(Point(x, y - 1));
+    if (x < cols - 1 && y > 0)
+        result.push_back(Point(x + 1, y - 1));
+    if (x < cols - 1)
+        result.push_back(Point(x + 1, y));
+    if (x < cols - 1 && y < rows - 1)
+        result.push_back(Point(x + 1, y + 1));
+    if (y < rows - 1)
+        result.push_back(Point(x, y + 1));
+    if (x > 0 && y < rows - 1)
+        result.push_back(Point(x - 1, y + 1));
+    if (x > 0)
+        result.push_back(Point(x - 1, y));
+
+    return result;
 }

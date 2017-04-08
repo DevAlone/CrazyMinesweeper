@@ -1,6 +1,7 @@
 #ifndef MINESFIELD_H
 #define MINESFIELD_H
 
+#include "point.h"
 #include "size.h"
 
 #include <vector>
@@ -36,8 +37,9 @@ public:
         value <<= 1;
         data |= value;
     }
-    inline void setCellState(unsigned char value)
+    inline void setCellState(CellState state)
     {
+        unsigned char value = static_cast<unsigned char>(state);
         data &= ~0b1100000;
         value <<= 5;
         data |= value;
@@ -56,6 +58,8 @@ class MinesField {
 public:
     MinesField(unsigned rows, unsigned cols);
 
+    void tryToOpenCell(const Point& point);
+
     unsigned getMinesCount() const;
 
     unsigned getRows() const;
@@ -65,6 +69,11 @@ public:
     double getMinesPercents() const;
 
     std::vector<Cell>& getCells();
+
+    unsigned getCellIndex(const Point& cell) const;
+    Point getCellPoint(unsigned index) const;
+    inline bool isCellIndexValid(unsigned index) const;
+    inline std::vector<Point> getAroundCells(const Point& cell) const;
 
 private:
     std::vector<Cell> cells;

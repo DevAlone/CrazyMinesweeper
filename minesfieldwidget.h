@@ -2,6 +2,7 @@
 #define MINESFIELDWIDGET_H
 
 #include "minesfield.h"
+#include "minesfieldwidgetsettings.h"
 #include "point.h"
 
 #include <memory>
@@ -9,7 +10,6 @@
 #include <QWidget>
 #include <QtWidgets>
 
-// TODO: split MinesField with game logic and MinesFieldWidget
 class MinesFieldWidget : public QWidget {
     Q_OBJECT
 public:
@@ -35,7 +35,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent* event);
 
 private:
-    void highlightCell(Point cell);
+    MinesFieldWidgetSettings settings;
+    void highlightCell(Point cell, bool state = false);
     void unhighlightCell(Point cell);
 
     std::unique_ptr<MinesField> field;

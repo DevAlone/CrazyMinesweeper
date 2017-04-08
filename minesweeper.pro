@@ -28,14 +28,16 @@ SOURCES += main.cpp\
     minesfield.cpp \
     minesfieldwidget.cpp \
     size.cpp \
-    point.cpp
+    point.cpp \
+    minesfieldwidgetsettings.cpp
 
 HEADERS  += \
     minesfield.h \
     minesfieldwidget.h \
     size.h \
-    point.h
+    point.h \
+    minesfieldwidgetsettings.h
 
-FORMS    += mainwindow.ui
+# FORMS    +=
 
 

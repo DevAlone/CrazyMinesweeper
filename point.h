@@ -11,6 +11,9 @@ public:
     int y() const;
     void setY(int y);
 
+    bool operator==(const Point& arg) const;
+    bool operator!=(const Point& arg) const;
+
 private:
     int _x, _y;
 };
