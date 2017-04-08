@@ -1,9 +1,9 @@
 #include "size.h"
 
-Size::Size(int x, int y)
-    : x(x), y(y)
+Size::Size(int width, int height)
+    : _width(width)
+    , _height(height)
 {
-
 }
 
 int Size::width() const
@@ -25,4 +25,3 @@ void Size::setHeight(int height)
 {
     _height = height;
 }
-

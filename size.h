@@ -1,11 +1,9 @@
 #ifndef SIZE_H
 #define SIZE_H
 
-
-class Size
-{
+class Size {
 public:
-    Size(int x = 0, int y = 0);
+    Size(int width = 0, int height = 0);
 
     int width() const;
     void setWidth(int width);

@@ -1,33 +1,32 @@
-#include "mainwindow.h"
 #include "minesfield.h"
 #include "minesfieldwidget.h"
 #include <QApplication>
 
 #include <QtWidgets>
 
-unsigned field_width = 10000;
-unsigned field_height = 10000;
+unsigned field_width = 1000;
+unsigned field_height = 1000;
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
 
     QWidget w;
-    QGridLayout *layout = new QGridLayout;
+    QGridLayout* layout = new QGridLayout;
 
-    MinesFieldWidget *field = new MinesFieldWidget(field_width, field_height);
+    MinesFieldWidget* field = new MinesFieldWidget(field_width, field_height);
 
-    QScrollBar *verticalScrollBar = new QScrollBar;
+    QScrollBar* verticalScrollBar = new QScrollBar;
     verticalScrollBar->setRange(0, field_height);
 
-    QScrollBar *horizontalScrollBar = new QScrollBar;
+    QScrollBar* horizontalScrollBar = new QScrollBar;
     horizontalScrollBar->setRange(0, field_width);
     horizontalScrollBar->setOrientation(Qt::Horizontal);
 
     QObject::connect(horizontalScrollBar, SIGNAL(valueChanged(int)),
-                     field, SLOT(horizontalScrollPosChanged(int)));
+        field, SLOT(horizontalScrollPosChanged(int)));
     QObject::connect(verticalScrollBar, SIGNAL(valueChanged(int)),
-                     field, SLOT(verticalScrollPosChanged(int)));
+        field, SLOT(verticalScrollPosChanged(int)));
 
     layout->addWidget(field, 0, 0);
     layout->addWidget(verticalScrollBar, 0, 1);

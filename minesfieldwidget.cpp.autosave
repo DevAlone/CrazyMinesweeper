@@ -62,6 +62,7 @@ void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
 
 void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+    
 }
 
 void MinesFieldWidget::updatePixmap()
