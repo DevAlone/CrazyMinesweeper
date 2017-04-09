@@ -67,6 +67,46 @@ MinesField::MinesField(unsigned rows, unsigned cols)
     }
 }
 
+void MinesField::lazyOpenCells(const Point& point)
+{
+    Cell* cell;
+    try {
+        cell = getCell(point);
+    } catch (const std::out_of_range& ex) {
+        return;
+    }
+    auto minesAround = getAroundCells(point);
+    unsigned markedAsBombCount = 0;
+    for (auto mine : minesAround) {
+        Cell* currentCell;
+        try {
+            currentCell = getCell(mine);
+        } catch (const std::out_of_range& ex) {
+            return;
+        }
+        if (currentCell->cellState() == Cell::CellState::MarkedAsBomb) {
+            markedAsBombCount++;
+            if (!currentCell->isMine()) {
+                loseGame();
+                return;
+            }
+        }
+    }
+    if (markedAsBombCount != cell->minesAround())
+        return;
+
+    for (auto mine : minesAround) {
+        tryToOpenCell(mine);
+    }
+}
+
+void MinesField::loseGame()
+{
+    lost = true;
+    won = false;
+    emit userLost();
+}
+
 void MinesField::tryToOpenCell(const Point& point)
 {
     unsigned cellIndex = getCellIndex(point);
@@ -79,9 +119,8 @@ void MinesField::tryToOpenCell(const Point& point)
         return;
 
     if (cell->isMine()) {
-        lost = true;
-        won = false;
-        emit userLost();
+        loseGame();
+        return;
     } else {
         std::queue<unsigned> cellsQueue;
         std::set<unsigned> usedCells;

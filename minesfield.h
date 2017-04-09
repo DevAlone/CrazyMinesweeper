@@ -13,6 +13,7 @@ class MinesField : public QObject {
 public:
     MinesField(unsigned rows, unsigned cols);
 
+    void lazyOpenCells(const Point& point);
     void tryToOpenCell(const Point& point);
     void markCell(const Point& point, Cell::CellState markAs = Cell::CellState::MarkedAsBomb);
     void unmarkCell(const Point& point);
@@ -52,6 +53,7 @@ private:
 
     bool lost = false;
     bool won = false;
+    void loseGame();
 };
 
 #endif // MINESFIELD_H

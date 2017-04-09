@@ -80,6 +80,9 @@ void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
             field->unmarkCell(selectedCell);
 
         updatePixmap();
+    } else if (event->buttons() == Qt::MiddleButton) {
+        field->lazyOpenCells(cellPoint);
+        updatePixmap();
     }
 }
 
