@@ -4,8 +4,8 @@
 
 #include <QtWidgets>
 
-unsigned field_width = 100;
-unsigned field_height = 100;
+unsigned field_width = 30;
+unsigned field_height = 30;
 
 int main(int argc, char* argv[])
 {

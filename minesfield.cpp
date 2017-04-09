@@ -12,15 +12,17 @@ MinesField::MinesField(unsigned rows, unsigned cols)
     minesPercents = 0.2;
 
     cells = std::vector<Cell>(rows * cols);
-    minesCount = rows * cols * minesPercents;
+    minesLeft = minesCount = rows * cols * minesPercents;
 
     // генерим мины в первых minesCount элементах массива
     for (unsigned i = 0; i < minesCount; i++) {
         cells.at(i).setMine();
     }
+
     // пермешиваем
     std::random_shuffle(cells.begin(), cells.end());
 
+    // расставляем количество мин
     for (unsigned i = 0; i < rows * cols; i++) {
         if (!cells.at(i).isMine())
             continue;
@@ -49,14 +51,20 @@ MinesField::MinesField(unsigned rows, unsigned cols)
             cells.at(i + cols + 1).setMinesAround(cells.at(i + cols + 1).minesAround() + 1);
     }
 
-    //    for(unsigned i = 0; i < rows * cols; i++) {
-    //        if(!cells.at(i).isMine())
-    //            cells.at(i).setCellState(static_cast<unsigned char>(Cell::CellState::Opened));
-
-    ////        int minesAround = cells.at(i).minesAround();
-    ////        if(minesAround > 3)
-    ////            qDebug() << minesAround;
-    //    }
+    bool first_cell_opened = false;
+    for (int i = cells.size() / 2; i < cells.size() && !first_cell_opened; i++) {
+        if (!cells.at(i).isMine() && cells.at(i).minesAround() == 0) {
+            first_cell_opened = true;
+            tryToOpenCell(getCellPoint(i));
+            break;
+        }
+    }
+    for (int i = cells.size() / 2; i >= 0 && !first_cell_opened; i--) {
+        if (!cells.at(i).isMine()) {
+            tryToOpenCell(getCellPoint(i));
+            break;
+        }
+    }
 }
 
 void MinesField::tryToOpenCell(const Point& point)
@@ -67,46 +75,80 @@ void MinesField::tryToOpenCell(const Point& point)
         return;
     Cell* cell = &cells.at(cellIndex);
 
-    cell->setCellState(Cell::CellState::Opened);
+    if (cell->cellState() != Cell::CellState::Closed)
+        return;
+
     if (cell->isMine()) {
-        // TODO: lose game
+        lost = true;
+        won = false;
+        emit userLost();
     } else {
-        //        cell.setCellState(Cell::CellState::Opened);
         std::queue<unsigned> cellsQueue;
         std::set<unsigned> usedCells;
         cellsQueue.push(cellIndex);
         usedCells.insert(cellIndex);
 
-        qDebug() << "start opening...";
         while (!cellsQueue.empty()) {
             cellIndex = cellsQueue.front();
             cellsQueue.pop();
             cell = &cells.at(cellIndex);
-            qDebug() << "cell " << cellIndex << "(" << getCellPoint(cellIndex).x() << "," << getCellPoint(cellIndex).y() << ")";
-            if (!cell->isMine()) {
+            if (!cell->isMine() && cell->cellState() == Cell::CellState::Closed) {
                 cell->setCellState(Cell::CellState::Opened);
                 if (cell->minesAround() == 0) {
-                    qDebug() << "minesAround == 0";
                     auto aroundCells = getAroundCells(getCellPoint(cellIndex));
 
                     for (auto cell : aroundCells) {
                         unsigned index = getCellIndex(cell);
-                        qDebug() << "cell around" << index << "(" << cell.x() << "," << cell.y() << ")";
                         if (usedCells.find(index) == usedCells.end()) {
-                            qDebug() << "push this";
                             cellsQueue.push(index);
                             usedCells.insert(index);
                         }
                     }
                 }
             }
-            qDebug() << "\n\n";
         }
     }
     //    qDebug() << "!";
     //    for (auto val : result)
     //        qDebug() << val.x() << val.y();
     //    qDebug() << "?";
+}
+
+void MinesField::markCell(const Point& point, Cell::CellState markAs)
+{
+    unsigned index = getCellIndex(point);
+    if (!isCellIndexValid(index))
+        return;
+
+    Cell& cell = cells.at(index);
+    if (cell.cellState() != Cell::CellState::Closed
+        && cell.cellState() != Cell::CellState::MarkedAsBomb
+        && cell.cellState() != Cell::CellState::MarkedAsQuestion)
+        return;
+    switch (markAs) {
+    case Cell::CellState::MarkedAsBomb:
+        cell.setCellState(Cell::CellState::MarkedAsBomb);
+        minesLeft--;
+        break;
+    case Cell::CellState::MarkedAsQuestion:
+        cell.setCellState(Cell::CellState::MarkedAsQuestion);
+        minesLeft++;
+        break;
+    }
+}
+
+void MinesField::unmarkCell(const Point& point)
+{
+    unsigned index = getCellIndex(point);
+    if (!isCellIndexValid(index))
+        return;
+
+    Cell& cell = cells.at(index);
+    if (!(cell.cellState() == Cell::CellState::MarkedAsBomb || cell.cellState() == Cell::CellState::MarkedAsQuestion))
+        return;
+
+    cell.setCellState(Cell::CellState::Closed);
+    minesLeft++;
 }
 
 unsigned MinesField::getMinesCount() const
@@ -144,6 +186,19 @@ Point MinesField::getCellPoint(unsigned index) const
     int y = index / cols;
     int x = index - y * cols;
     return Point(x, y);
+}
+
+Cell& MinesField::getCell(const Point& cell)
+{
+    return getCell(getCellIndex(cell));
+}
+
+Cell& MinesField::getCell(unsigned index)
+{
+    if (!isCellIndexValid(index))
+        throw std::out_of_range("index out of range");
+
+    return cells.at(index);
 }
 
 bool MinesField::isCellIndexValid(unsigned index) const

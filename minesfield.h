@@ -1,64 +1,21 @@
 #ifndef MINESFIELD_H
 #define MINESFIELD_H
 
+#include "cell.h"
 #include "point.h"
 #include "size.h"
 
+#include <QObject>
 #include <vector>
 
-class Cell {
-public:
-    enum class CellState : unsigned char { Closed,
-        Opened,
-        MarkedAsBomb,
-        MarkedAsQuestion };
-    inline bool isMine() const
-    {
-        return data & 1;
-    }
-    inline unsigned char minesAround() const
-    {
-        return data >> 1 & 0b1111;
-    }
-    inline CellState cellState() const
-    {
-        return CellState(data >> 5 & 0b11);
-    }
-    inline void setMine(bool value = true)
-    {
-        if (value)
-            data |= 1;
-        else
-            data = data >> 1 << 1;
-    }
-    inline void setMinesAround(unsigned char value)
-    {
-        data &= ~0b11110;
-        value <<= 1;
-        data |= value;
-    }
-    inline void setCellState(CellState state)
-    {
-        unsigned char value = static_cast<unsigned char>(state);
-        data &= ~0b1100000;
-        value <<= 5;
-        data |= value;
-    }
-
-private:
-    // CellState state; // 2 bits
-    // char minesAround; // 4 bits
-    // bool mine; // 1 bit
-    // reserved cellState minesAround isMine
-    // 0        00         0000         0
-    unsigned char data = 0;
-};
-
-class MinesField {
+class MinesField : public QObject {
+    Q_OBJECT
 public:
     MinesField(unsigned rows, unsigned cols);
 
     void tryToOpenCell(const Point& point);
+    void markCell(const Point& point, Cell::CellState markAs = Cell::CellState::MarkedAsBomb);
+    void unmarkCell(const Point& point);
 
     unsigned getMinesCount() const;
 
@@ -72,15 +29,26 @@ public:
 
     unsigned getCellIndex(const Point& cell) const;
     Point getCellPoint(unsigned index) const;
+    Cell& getCell(const Point& cell);
+    Cell& getCell(unsigned index);
     inline bool isCellIndexValid(unsigned index) const;
     inline std::vector<Point> getAroundCells(const Point& cell) const;
 
+signals:
+    void userLost();
+    void userWon();
+public slots:
+
 private:
     std::vector<Cell> cells;
-    unsigned minesCount;
+    unsigned minesCount = 0;
+    int minesLeft = 0;
     unsigned rows;
     unsigned cols;
-    double minesPercents;
+    double minesPercents = 0;
+
+    bool lost = false;
+    bool won = false;
 };
 
 #endif // MINESFIELD_H

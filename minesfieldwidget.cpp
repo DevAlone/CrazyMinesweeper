@@ -7,6 +7,7 @@ MinesFieldWidget::MinesFieldWidget(unsigned rows, unsigned cols, QWidget* parent
     settings.cellColor = Qt::white;
 
     field = std::make_unique<MinesField>(rows, cols);
+    connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
 
     cellSize = Size(10, 10);
     borderSize = Size(2, 2);
@@ -54,13 +55,26 @@ void MinesFieldWidget::showEvent(QShowEvent* event)
 
 void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
 {
+    auto pos = event->pos();
+    Point cellPoint;
+    cellPoint.setX(double(pos.x()) / (cellSize.width() + borderSize.width()));
+    cellPoint.setY(double(pos.y()) / (cellSize.height() + borderSize.height()));
+
     if (event->buttons() == Qt::LeftButton) {
-        auto pos = event->pos();
-        selectedCell.setX(double(pos.x()) / (cellSize.width() + borderSize.width()));
-        selectedCell.setY(double(pos.y()) / (cellSize.height() + borderSize.height()));
-        qDebug() << event->pos();
-        qDebug() << selectedCell.x() << selectedCell.y();
+        selectedCell = cellPoint;
         highlightCell(selectedCell);
+    } else if (event->buttons() == Qt::RightButton) {
+        selectedCell = cellPoint;
+        Cell& cell = field->getCell(selectedCell);
+        qDebug() << int(cell.cellState());
+        if (cell.cellState() == Cell::CellState::Closed)
+            field->markCell(selectedCell, Cell::CellState::MarkedAsBomb);
+        else if (cell.cellState() == Cell::CellState::MarkedAsBomb)
+            field->markCell(selectedCell, Cell::CellState::MarkedAsQuestion);
+        else if (cell.cellState() == Cell::CellState::MarkedAsQuestion)
+            field->unmarkCell(selectedCell);
+
+        updatePixmap();
     }
 }
 
@@ -71,7 +85,6 @@ void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
         Point cell(double(pos.x()) / (cellSize.width() + borderSize.width()),
             double(pos.y()) / (cellSize.height() + borderSize.height()));
         unhighlightCell(selectedCell);
-        qDebug() << cell.x() << cell.y() << ":" << selectedCell.x() << selectedCell.y();
         if (cell != selectedCell)
             return;
         field->tryToOpenCell(selectedCell);
@@ -158,12 +171,15 @@ void MinesFieldWidget::updatePixmap()
             case Cell::CellState::MarkedAsBomb:
                 color = Qt::yellow;
                 break;
+            case Cell::CellState::MarkedAsQuestion:
+                color = Qt::blue;
+                break;
             default:
                 break;
             }
 
-            if (cell.isMine())
-                color = Qt::red;
+            //            if (cell.isMine())
+            //                color = Qt::red;
 
             painter.fillRect((x - viewport.start_col) * stepX + borderSize.width(),
                 (y - viewport.start_row) * stepY + borderSize.height(),
@@ -207,5 +223,14 @@ void MinesFieldWidget::scrollPosChanged(int horizontal_pos, int vertical_pos)
     viewport.start_row = vertical_pos;
     viewport.x = horizontal_pos * (cellSize.width() + borderSize.width());
     viewport.y = vertical_pos * (cellSize.height() + borderSize.height());
+    updatePixmap();
+}
+
+void MinesFieldWidget::userLose()
+{
+    QMessageBox::warning(this, "you lose", "you lose");
+
+    field = std::make_unique<MinesField>(field->getRows(), field->getCols());
+    connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
     updatePixmap();
 }

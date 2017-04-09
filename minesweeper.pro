@@ -29,14 +29,16 @@ SOURCES += main.cpp\
     minesfieldwidget.cpp \
     size.cpp \
     point.cpp \
-    minesfieldwidgetsettings.cpp
+    minesfieldwidgetsettings.cpp \
+    cell.cpp
 
 HEADERS  += \
     minesfield.h \
     minesfieldwidget.h \
     size.h \
     point.h \
-    minesfieldwidgetsettings.h
+    minesfieldwidgetsettings.h \
+    cell.h
 
 # FORMS    +=
 
