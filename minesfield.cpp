@@ -201,11 +201,6 @@ Cell& MinesField::getCell(unsigned index)
     return cells.at(index);
 }
 
-bool MinesField::isCellIndexValid(unsigned index) const
-{
-    return index >= 0 && index < cells.size();
-}
-
 std::vector<Point> MinesField::getAroundCells(const Point& cell) const
 {
     int x = cell.x();

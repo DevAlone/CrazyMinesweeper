@@ -92,7 +92,7 @@ void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-void MinesFieldWidget::highlightCell(Point cell, bool state)
+void MinesFieldWidget::highlightCell(Point cell, QColor color)
 {
     cell.setX(cell.x() - viewport.start_col);
     cell.setY(cell.y() - viewport.start_row);
@@ -105,13 +105,17 @@ void MinesFieldWidget::highlightCell(Point cell, bool state)
         y,
         cellSize.width(),
         cellSize.height(),
-        state ? settings.cellColor : settings.backgroundColor);
+        color);
     update();
 }
 
 void MinesFieldWidget::unhighlightCell(Point cell)
 {
-    highlightCell(cell, true);
+    QColor color = Qt::white;
+    if (field->getCell(cell).cellState() == Cell::CellState::Opened)
+        updatePixmap();
+    else
+        highlightCell(cell, color);
 }
 
 void MinesFieldWidget::updatePixmap()

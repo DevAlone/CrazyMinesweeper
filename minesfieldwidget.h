@@ -37,7 +37,7 @@ protected:
 
 private:
     MinesFieldWidgetSettings settings;
-    void highlightCell(Point cell, bool state = false);
+    void highlightCell(Point cell, QColor color = Qt::gray);
     void unhighlightCell(Point cell);
 
     std::unique_ptr<MinesField> field;
