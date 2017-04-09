@@ -1,0 +1,12 @@
+INPUT(
+./debug/main.o
+./debug/minesfield.o
+./debug/minesfieldwidget.o
+./debug/size.o
+./debug/point.o
+./debug/minesfieldwidgetsettings.o
+./debug/cell.o
+./debug/minesweeper_plugin_import.o
+./debug/moc_minesfield.o
+./debug/moc_minesfieldwidget.o
+);
