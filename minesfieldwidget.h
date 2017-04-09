@@ -37,8 +37,8 @@ protected:
 
 private:
     MinesFieldWidgetSettings settings;
-    void highlightCell(Point cell, QColor color = Qt::gray);
-    void unhighlightCell(Point cell);
+    void highlightCell(Point cellPoint, QColor color = Qt::gray);
+    void unhighlightCell(Point cellPoint);
 
     std::unique_ptr<MinesField> field;
     QPixmap pixmap;

@@ -188,17 +188,17 @@ Point MinesField::getCellPoint(unsigned index) const
     return Point(x, y);
 }
 
-Cell& MinesField::getCell(const Point& cell)
+Cell* MinesField::getCell(const Point& cell)
 {
     return getCell(getCellIndex(cell));
 }
 
-Cell& MinesField::getCell(unsigned index)
+Cell* MinesField::getCell(unsigned index)
 {
     if (!isCellIndexValid(index))
         throw std::out_of_range("index out of range");
 
-    return cells.at(index);
+    return &cells.at(index);
 }
 
 std::vector<Point> MinesField::getAroundCells(const Point& cell) const

@@ -9,7 +9,7 @@ MinesFieldWidget::MinesFieldWidget(unsigned rows, unsigned cols, QWidget* parent
     field = std::make_unique<MinesField>(rows, cols);
     connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
 
-    cellSize = Size(10, 10);
+    cellSize = Size(15, 15);
     borderSize = Size(2, 2);
     fieldSize = Size(cols * (cellSize.width() + borderSize.width()),
         rows * (cellSize.height() + borderSize.height()));
@@ -65,13 +65,18 @@ void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
         highlightCell(selectedCell);
     } else if (event->buttons() == Qt::RightButton) {
         selectedCell = cellPoint;
-        Cell& cell = field->getCell(selectedCell);
-        qDebug() << int(cell.cellState());
-        if (cell.cellState() == Cell::CellState::Closed)
+        Cell* cell;
+        try {
+            cell = field->getCell(selectedCell);
+        } catch (std::out_of_range& ex) {
+            return;
+        }
+
+        if (cell->cellState() == Cell::CellState::Closed)
             field->markCell(selectedCell, Cell::CellState::MarkedAsBomb);
-        else if (cell.cellState() == Cell::CellState::MarkedAsBomb)
+        else if (cell->cellState() == Cell::CellState::MarkedAsBomb)
             field->markCell(selectedCell, Cell::CellState::MarkedAsQuestion);
-        else if (cell.cellState() == Cell::CellState::MarkedAsQuestion)
+        else if (cell->cellState() == Cell::CellState::MarkedAsQuestion)
             field->unmarkCell(selectedCell);
 
         updatePixmap();
@@ -92,15 +97,15 @@ void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-void MinesFieldWidget::highlightCell(Point cell, QColor color)
+void MinesFieldWidget::highlightCell(Point cellPoint, QColor color)
 {
-    cell.setX(cell.x() - viewport.start_col);
-    cell.setY(cell.y() - viewport.start_row);
-    if (cell.x() < 0 || cell.y() < 0)
+    cellPoint.setX(cellPoint.x() - viewport.start_col);
+    cellPoint.setY(cellPoint.y() - viewport.start_row);
+    if (cellPoint.x() < 0 || cellPoint.y() < 0)
         return;
     QPainter painter(&pixmap);
-    int x = cell.x() * (cellSize.width() + borderSize.width()) + borderSize.width();
-    int y = cell.y() * (cellSize.height() + borderSize.height()) + borderSize.height();
+    int x = cellPoint.x() * (cellSize.width() + borderSize.width()) + borderSize.width();
+    int y = cellPoint.y() * (cellSize.height() + borderSize.height()) + borderSize.height();
     painter.fillRect(x,
         y,
         cellSize.width(),
@@ -109,13 +114,20 @@ void MinesFieldWidget::highlightCell(Point cell, QColor color)
     update();
 }
 
-void MinesFieldWidget::unhighlightCell(Point cell)
+void MinesFieldWidget::unhighlightCell(Point cellPoint)
 {
     QColor color = Qt::white;
-    if (field->getCell(cell).cellState() == Cell::CellState::Opened)
+    Cell* cell;
+    try {
+        cell = field->getCell(cellPoint);
+    } catch (std::out_of_range& ex) {
+        return;
+    }
+
+    if (cell->cellState() == Cell::CellState::Opened)
         updatePixmap();
     else
-        highlightCell(cell, color);
+        highlightCell(cellPoint, color);
 }
 
 void MinesFieldWidget::updatePixmap()

@@ -29,8 +29,8 @@ public:
 
     unsigned getCellIndex(const Point& cell) const;
     Point getCellPoint(unsigned index) const;
-    Cell& getCell(const Point& cell);
-    Cell& getCell(unsigned index);
+    Cell* getCell(const Point& cell);
+    Cell* getCell(unsigned index);
     bool isCellIndexValid(unsigned index) const
     {
         return index >= 0 && index < cells.size();
