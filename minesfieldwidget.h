@@ -13,7 +13,7 @@
 class MinesFieldWidget : public QWidget {
     Q_OBJECT
 public:
-    explicit MinesFieldWidget(unsigned width, unsigned height, QWidget* parent = 0);
+    explicit MinesFieldWidget(QWidget* parent = 0);
 
     void updatePixmap();
 
@@ -57,6 +57,8 @@ private:
 
     Size fieldSize;
     Point selectedCell;
+
+    Point convertCellPointToAbsolute(const Point& point);
 };
 
 #endif // MINESFIELDWIDGET_H

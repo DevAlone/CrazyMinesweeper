@@ -1,16 +1,17 @@
 #include "minesfieldwidget.h"
 
-MinesFieldWidget::MinesFieldWidget(unsigned rows, unsigned cols, QWidget* parent)
+MinesFieldWidget::MinesFieldWidget(QWidget* parent)
     : QWidget(parent)
 {
+    int cols = 10, rows = 10; // TODO: delete this
     settings.backgroundColor = Qt::gray;
     settings.cellColor = Qt::white;
 
     field = std::make_unique<MinesField>(rows, cols);
     connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
 
-    cellSize = Size(15, 15);
-    borderSize = Size(2, 2);
+    cellSize = Size(20, 20);
+    borderSize = Size(0, 0);
     fieldSize = Size(cols * (cellSize.width() + borderSize.width()),
         rows * (cellSize.height() + borderSize.height()));
 
@@ -60,11 +61,10 @@ void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
     cellPoint.setX(double(pos.x()) / (cellSize.width() + borderSize.width()));
     cellPoint.setY(double(pos.y()) / (cellSize.height() + borderSize.height()));
 
+    selectedCell = convertCellPointToAbsolute(cellPoint);
     if (event->buttons() == Qt::LeftButton) {
-        selectedCell = cellPoint;
         highlightCell(selectedCell);
     } else if (event->buttons() == Qt::RightButton) {
-        selectedCell = cellPoint;
         Cell* cell;
         try {
             cell = field->getCell(selectedCell);
@@ -81,7 +81,7 @@ void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
 
         updatePixmap();
     } else if (event->buttons() == Qt::MiddleButton) {
-        field->lazyOpenCells(cellPoint);
+        field->lazyOpenCells(selectedCell);
         updatePixmap();
     }
 }
@@ -92,6 +92,8 @@ void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
         auto pos = event->pos();
         Point cell(double(pos.x()) / (cellSize.width() + borderSize.width()),
             double(pos.y()) / (cellSize.height() + borderSize.height()));
+        cell = convertCellPointToAbsolute(cell);
+
         unhighlightCell(selectedCell);
         if (cell != selectedCell)
             return;
@@ -133,6 +135,11 @@ void MinesFieldWidget::unhighlightCell(Point cellPoint)
         highlightCell(cellPoint, color);
 }
 
+Point MinesFieldWidget::convertCellPointToAbsolute(const Point& point)
+{
+    return Point(point.x() + viewport.start_col, point.y() + viewport.start_row);
+}
+
 void MinesFieldWidget::updatePixmap()
 {
     int width = visibleRegion().boundingRect().width();
@@ -152,14 +159,18 @@ void MinesFieldWidget::updatePixmap()
     int stepY = cellSize.height() + borderSize.height();
 
     // horizontal lines
-    painter.setPen(QPen(Qt::black, borderSize.width()));
-    for (unsigned y = borderSize.height() / 2; y <= viewport.height; y += stepY)
-        painter.drawLine(0, y, viewport.width, y);
+    if (borderSize.height() > 0) {
+        painter.setPen(QPen(Qt::black, borderSize.height()));
+        for (unsigned y = borderSize.height() / 2; y <= viewport.height; y += stepY)
+            painter.drawLine(0, y, viewport.width, y);
+    }
 
     // vertical lines
-    painter.setPen(QPen(Qt::black, borderSize.width()));
-    for (unsigned x = borderSize.width() / 2; x <= viewport.width; x += stepX)
-        painter.drawLine(x, 0, x, viewport.height);
+    if (borderSize.width() > 0) {
+        painter.setPen(QPen(Qt::black, borderSize.width()));
+        for (unsigned x = borderSize.width() / 2; x <= viewport.width; x += stepX)
+            painter.drawLine(x, 0, x, viewport.height);
+    }
 
     for (unsigned y = viewport.start_row;
          y < viewport.start_row + viewport.rows && y < field->getRows();

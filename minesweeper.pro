@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     size.cpp \
     point.cpp \
     minesfieldwidgetsettings.cpp \
-    cell.cpp
+    cell.cpp \
+    mainwindow.cpp \
+    minesfieldscrollablewidget.cpp
 
 HEADERS  += \
     minesfield.h \
@@ -38,8 +40,13 @@ HEADERS  += \
     size.h \
     point.h \
     minesfieldwidgetsettings.h \
-    cell.h
+    cell.h \
+    mainwindow.h \
+    minesfieldscrollablewidget.h
 
 # FORMS    +=
+
+FORMS += \
+    mainwindow.ui
 
 
