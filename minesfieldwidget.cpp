@@ -3,14 +3,14 @@
 MinesFieldWidget::MinesFieldWidget(QWidget* parent)
     : QWidget(parent)
 {
-    int cols = 10, rows = 10; // TODO: delete this
+    int cols = 1000, rows = 1000; // TODO: delete this
     settings.backgroundColor = Qt::gray;
     settings.cellColor = Qt::white;
 
     field = std::make_unique<MinesField>(rows, cols);
     connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
 
-    cellSize = Size(20, 20);
+    cellSize = Size(1, 1);
     borderSize = Size(0, 0);
     fieldSize = Size(cols * (cellSize.width() + borderSize.width()),
         rows * (cellSize.height() + borderSize.height()));
@@ -24,8 +24,12 @@ MinesFieldWidget::MinesFieldWidget(QWidget* parent)
     viewport.rows = 100;
     viewport.cols = 100;
 
+    //    zoomWindow = QPixmap(width() / 4 > 0 ? width() / 4 : 1,
+    //        height() / 4 > 0 ? height() / 4 : 1);
     pixmap = QPixmap(width(), height());
     updatePixmap();
+
+    setMouseTracking(true);
 }
 
 void MinesFieldWidget::paintEvent(QPaintEvent* event)
@@ -34,6 +38,26 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
     QPainter painter(this);
 
     painter.drawPixmap(0, 0, pixmap);
+
+    if (mousePos.x() >= 0 && mousePos.x() < pixmap.width()
+        && mousePos.y() >= 0 && mousePos.y() < pixmap.height()) {
+        // TODO: optimize this, maybe add checks for out of range
+        auto zoomedPixmap = pixmap.copy(mousePos.x() - zoomArea.width() / 2,
+                                      mousePos.y() - zoomArea.height() / 2,
+                                      zoomArea.width(),
+                                      zoomArea.height())
+                                .scaled(width() * 0.4, width() * 0.4);
+        int centerRectWidth = zoomedPixmap.width() / zoomArea.width();
+        int centerRectHeight = zoomedPixmap.height() / zoomArea.height();
+
+        QPainter p1(&zoomedPixmap);
+        p1.drawRect(centerRectWidth * (zoomArea.width() / 2),
+            centerRectHeight * (zoomArea.height() / 2),
+            centerRectWidth,
+            centerRectHeight);
+        p1.drawRect(0, 0, zoomedPixmap.width() - 1, zoomedPixmap.height() - 1);
+        painter.drawPixmap(width() * 0.6, 0, zoomedPixmap);
+    }
 
     event->accept();
 }
@@ -84,6 +108,7 @@ void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
         field->lazyOpenCells(selectedCell);
         updatePixmap();
     }
+    update();
 }
 
 void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
@@ -100,6 +125,17 @@ void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
         field->tryToOpenCell(selectedCell);
         updatePixmap();
     }
+    update();
+}
+
+void MinesFieldWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    mousePos = event->pos();
+    update();
+}
+
+void MinesFieldWidget::keyPressEvent(QKeyEvent* event)
+{
 }
 
 void MinesFieldWidget::highlightCell(Point cellPoint, QColor color)
@@ -135,6 +171,12 @@ void MinesFieldWidget::unhighlightCell(Point cellPoint)
         highlightCell(cellPoint, color);
 }
 
+Point MinesFieldWidget::getCellByMousePoint(const QPoint& mousePoint)
+{
+    return Point(double(mousePoint.x()) / (cellSize.width() + borderSize.width()),
+        double(mousePoint.y()) / (cellSize.height() + borderSize.height()));
+}
+
 Point MinesFieldWidget::convertCellPointToAbsolute(const Point& point)
 {
     return Point(point.x() + viewport.start_col, point.y() + viewport.start_row);
@@ -142,8 +184,10 @@ Point MinesFieldWidget::convertCellPointToAbsolute(const Point& point)
 
 void MinesFieldWidget::updatePixmap()
 {
-    int width = visibleRegion().boundingRect().width();
-    int height = visibleRegion().boundingRect().height();
+    //    int width = visibleRegion().boundingRect().width();
+    //    int height = visibleRegion().boundingRect().height();
+    int width = 100;
+    int height = 100;
     if (width < 1 || height < 1)
         return;
     viewport.width = width;

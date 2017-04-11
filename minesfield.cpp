@@ -9,7 +9,7 @@ MinesField::MinesField(unsigned rows, unsigned cols)
     : rows(rows)
     , cols(cols)
 {
-    minesPercents = 0.2;
+    minesPercents = 0.1;
 
     cells = std::vector<Cell>(rows * cols);
     minesLeft = minesCount = rows * cols * minesPercents;
@@ -52,14 +52,14 @@ MinesField::MinesField(unsigned rows, unsigned cols)
     }
 
     bool first_cell_opened = false;
-    for (int i = cells.size() / 2; i < cells.size() && !first_cell_opened; i++) {
+    for (unsigned i = cells.size() / 2; i < cells.size() && !first_cell_opened; i++) {
         if (!cells.at(i).isMine() && cells.at(i).minesAround() == 0) {
             first_cell_opened = true;
             tryToOpenCell(getCellPoint(i));
             break;
         }
     }
-    for (int i = cells.size() / 2; i >= 0 && !first_cell_opened; i--) {
+    for (unsigned i = cells.size() / 2; i >= 0 && !first_cell_opened; i--) {
         if (!cells.at(i).isMine()) {
             tryToOpenCell(getCellPoint(i));
             break;
@@ -75,6 +75,9 @@ void MinesField::lazyOpenCells(const Point& point)
     } catch (const std::out_of_range& ex) {
         return;
     }
+    if (cell->cellState() != Cell::CellState::Opened)
+        return;
+
     auto minesAround = getAroundCells(point);
     unsigned markedAsBombCount = 0;
     for (auto mine : minesAround) {

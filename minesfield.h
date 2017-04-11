@@ -32,7 +32,7 @@ public:
     Point getCellPoint(unsigned index) const;
     Cell* getCell(const Point& cell);
     Cell* getCell(unsigned index);
-    bool isCellIndexValid(unsigned index) const
+    bool isCellIndexValid(long index) const
     {
         return index >= 0 && index < cells.size();
     }

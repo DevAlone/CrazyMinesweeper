@@ -34,6 +34,8 @@ protected:
     void showEvent(QShowEvent* event);
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void keyPressEvent(QKeyEvent* event);
 
 private:
     MinesFieldWidgetSettings settings;
@@ -57,7 +59,10 @@ private:
 
     Size fieldSize;
     Point selectedCell;
+    QPoint mousePos;
+    QSize zoomArea = QSize(7, 7);
 
+    Point getCellByMousePoint(const QPoint& mousePoint);
     Point convertCellPointToAbsolute(const Point& point);
 };
 

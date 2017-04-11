@@ -364,7 +364,13 @@ moc_minesfieldwidget.cpp: ../minesfield.h \
 moc_mainwindow.cpp: ../mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../mainwindow.h -o moc_mainwindow.cpp
 
-moc_minesfieldscrollablewidget.cpp: ../minesfieldscrollablewidget.h
+moc_minesfieldscrollablewidget.cpp: ../minesfieldwidget.h \
+		../minesfield.h \
+		../cell.h \
+		../point.h \
+		../size.h \
+		../minesfieldwidgetsettings.h \
+		../minesfieldscrollablewidget.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../minesfieldscrollablewidget.h -o moc_minesfieldscrollablewidget.cpp
 
 compiler_moc_source_make_all:
@@ -422,16 +428,16 @@ cell.o: ../cell.cpp ../cell.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cell.o ../cell.cpp
 
 mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
-		ui_mainwindow.h \
+		ui_mainwindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
+
+minesfieldscrollablewidget.o: ../minesfieldscrollablewidget.cpp ../minesfieldscrollablewidget.h \
 		../minesfieldwidget.h \
 		../minesfield.h \
 		../cell.h \
 		../point.h \
 		../size.h \
 		../minesfieldwidgetsettings.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
-
-minesfieldscrollablewidget.o: ../minesfieldscrollablewidget.cpp ../minesfieldscrollablewidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfieldscrollablewidget.o ../minesfieldscrollablewidget.cpp
 
 moc_minesfield.o: moc_minesfield.cpp 

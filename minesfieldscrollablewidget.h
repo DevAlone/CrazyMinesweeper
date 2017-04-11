@@ -14,6 +14,9 @@ signals:
 
 public slots:
 
+protected:
+    void keyPressEvent(QKeyEvent* event);
+
 private:
     MinesFieldWidget* minesFieldWidget;
 };

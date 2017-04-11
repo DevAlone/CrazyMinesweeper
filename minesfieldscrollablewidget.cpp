@@ -8,10 +8,10 @@ MinesFieldScrollableWidget::MinesFieldScrollableWidget(QWidget* parent)
     QGridLayout* layout = new QGridLayout;
 
     QScrollBar* verticalScrollBar = new QScrollBar;
-    verticalScrollBar->setRange(0, 10); // TODO: do it
+    verticalScrollBar->setRange(0, 30); // TODO: do it
 
     QScrollBar* horizontalScrollBar = new QScrollBar;
-    horizontalScrollBar->setRange(0, 10); // TODO: do it
+    horizontalScrollBar->setRange(0, 30); // TODO: do it
     horizontalScrollBar->setOrientation(Qt::Horizontal);
 
     QObject::connect(horizontalScrollBar, SIGNAL(valueChanged(int)),
@@ -24,4 +24,8 @@ MinesFieldScrollableWidget::MinesFieldScrollableWidget(QWidget* parent)
     layout->addWidget(horizontalScrollBar, 1, 0);
 
     setLayout(layout);
+}
+
+void MinesFieldScrollableWidget::keyPressEvent(QKeyEvent* event)
+{
 }
