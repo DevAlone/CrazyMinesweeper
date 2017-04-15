@@ -9,7 +9,7 @@ MinesField::MinesField(unsigned rows, unsigned cols)
     : rows(rows)
     , cols(cols)
 {
-    minesPercents = 0.1;
+    minesPercents = 0.2;
 
     cells = std::vector<Cell>(rows * cols);
     minesLeft = minesCount = rows * cols * minesPercents;
@@ -69,6 +69,8 @@ MinesField::MinesField(unsigned rows, unsigned cols)
 
 void MinesField::lazyOpenCells(const Point& point)
 {
+    if (lost)
+        return;
     Cell* cell;
     try {
         cell = getCell(point);
@@ -112,6 +114,8 @@ void MinesField::loseGame()
 
 void MinesField::tryToOpenCell(const Point& point)
 {
+    if (lost)
+        return;
     unsigned cellIndex = getCellIndex(point);
 
     if (!isCellIndexValid(cellIndex))
@@ -158,6 +162,8 @@ void MinesField::tryToOpenCell(const Point& point)
 
 void MinesField::markCell(const Point& point, Cell::CellState markAs)
 {
+    if (lost)
+        return;
     unsigned index = getCellIndex(point);
     if (!isCellIndexValid(index))
         return;
@@ -181,6 +187,8 @@ void MinesField::markCell(const Point& point, Cell::CellState markAs)
 
 void MinesField::unmarkCell(const Point& point)
 {
+    if (lost)
+        return;
     unsigned index = getCellIndex(point);
     if (!isCellIndexValid(index))
         return;

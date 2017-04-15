@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "minesfieldwidget.h"
+
 #include <QMainWindow>
 
 namespace Ui {
@@ -17,9 +19,18 @@ public:
 protected:
     void keyPressEvent(QKeyEvent* event);
     //    bool event(QEvent* event);
+public slots:
+    void loseGame();
+private slots:
+    void on_actionNew_game_triggered();
+
+    void on_actionSettings_triggered();
 
 private:
     Ui::MainWindow* ui;
+
+    MinesFieldWidget* minesFieldWidget;
+    std::shared_ptr<MinesField> minesField;
 };
 
 #endif // MAINWINDOW_H

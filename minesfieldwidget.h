@@ -19,6 +19,18 @@ public:
 
     QSize sizeHint() const;
 
+    std::shared_ptr<MinesField> getField() const;
+    void setField(const std::shared_ptr<MinesField>& value);
+
+    QSize getCellSize() const;
+    void setCellSize(const QSize& value);
+
+    QSize getBorderSize() const;
+    void setBorderSize(const QSize& value);
+
+    MinesFieldWidgetSettings getSettings() const;
+    void setSettings(const MinesFieldWidgetSettings& value);
+
 signals:
 
 public slots:
@@ -38,11 +50,11 @@ protected:
     void keyPressEvent(QKeyEvent* event);
 
 private:
+    std::shared_ptr<MinesField> field;
     MinesFieldWidgetSettings settings;
     void highlightCell(Point cellPoint, QColor color = Qt::gray);
     void unhighlightCell(Point cellPoint);
 
-    std::unique_ptr<MinesField> field;
     QPixmap pixmap;
 
     struct Viewport {
@@ -54,10 +66,10 @@ private:
 
     Viewport viewport;
 
-    Size cellSize;
-    Size borderSize;
+    QSize cellSize;
+    QSize borderSize;
 
-    Size fieldSize;
+    QSize fieldSize;
     Point selectedCell;
     QPoint mousePos;
     QSize zoomArea = QSize(7, 7);

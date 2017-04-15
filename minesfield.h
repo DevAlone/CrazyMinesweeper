@@ -3,7 +3,6 @@
 
 #include "cell.h"
 #include "point.h"
-#include "size.h"
 
 #include <QObject>
 #include <vector>

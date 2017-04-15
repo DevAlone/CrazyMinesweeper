@@ -9,10 +9,10 @@ MinesFieldWidget::MinesFieldWidget(QWidget* parent)
 
     field = std::make_unique<MinesField>(rows, cols);
     connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
-
-    cellSize = Size(1, 1);
-    borderSize = Size(0, 0);
-    fieldSize = Size(cols * (cellSize.width() + borderSize.width()),
+    // TODO: fix it
+    cellSize = QSize(1, 1);
+    borderSize = QSize(0, 0);
+    fieldSize = QSize(cols * (cellSize.width() + borderSize.width()),
         rows * (cellSize.height() + borderSize.height()));
 
     viewport.x = 0;
@@ -39,9 +39,10 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
 
     painter.drawPixmap(0, 0, pixmap);
 
-    if (mousePos.x() >= 0 && mousePos.x() < pixmap.width()
+    if (settings.isZoomEnabled && mousePos.x() >= 0 && mousePos.x() < pixmap.width()
         && mousePos.y() >= 0 && mousePos.y() < pixmap.height()) {
         // TODO: optimize this, maybe add checks for out of range
+        // TODO: fix zoom near borders
         auto zoomedPixmap = pixmap.copy(mousePos.x() - zoomArea.width() / 2,
                                       mousePos.y() - zoomArea.height() / 2,
                                       zoomArea.width(),
@@ -138,6 +139,26 @@ void MinesFieldWidget::keyPressEvent(QKeyEvent* event)
 {
 }
 
+MinesFieldWidgetSettings MinesFieldWidget::getSettings() const
+{
+    return settings;
+}
+
+void MinesFieldWidget::setSettings(const MinesFieldWidgetSettings& value)
+{
+    settings = value;
+}
+
+std::shared_ptr<MinesField> MinesFieldWidget::getField() const
+{
+    return field;
+}
+
+void MinesFieldWidget::setField(const std::shared_ptr<MinesField>& value)
+{
+    field = value;
+}
+
 void MinesFieldWidget::highlightCell(Point cellPoint, QColor color)
 {
     cellPoint.setX(cellPoint.x() - viewport.start_col);
@@ -157,6 +178,7 @@ void MinesFieldWidget::highlightCell(Point cellPoint, QColor color)
 
 void MinesFieldWidget::unhighlightCell(Point cellPoint)
 {
+    // TODO: fix unhighlighting with other color
     QColor color = Qt::white;
     Cell* cell;
     try {
@@ -169,6 +191,26 @@ void MinesFieldWidget::unhighlightCell(Point cellPoint)
         updatePixmap();
     else
         highlightCell(cellPoint, color);
+}
+
+QSize MinesFieldWidget::getBorderSize() const
+{
+    return borderSize;
+}
+
+void MinesFieldWidget::setBorderSize(const QSize& value)
+{
+    borderSize = value;
+}
+
+QSize MinesFieldWidget::getCellSize() const
+{
+    return cellSize;
+}
+
+void MinesFieldWidget::setCellSize(const QSize& value)
+{
+    cellSize = value;
 }
 
 Point MinesFieldWidget::getCellByMousePoint(const QPoint& mousePoint)
@@ -184,10 +226,11 @@ Point MinesFieldWidget::convertCellPointToAbsolute(const Point& point)
 
 void MinesFieldWidget::updatePixmap()
 {
-    //    int width = visibleRegion().boundingRect().width();
-    //    int height = visibleRegion().boundingRect().height();
-    int width = 100;
-    int height = 100;
+    // TODO: do it
+    int width = visibleRegion().boundingRect().width();
+    int height = visibleRegion().boundingRect().height();
+    //    int width = 100;
+    //    int height = 100;
     if (width < 1 || height < 1)
         return;
     viewport.width = width;

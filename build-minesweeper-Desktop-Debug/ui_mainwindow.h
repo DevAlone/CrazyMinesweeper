@@ -16,10 +16,9 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "minesfieldscrollablewidget.h"
 
@@ -28,13 +27,13 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *actionNew_game;
+    QAction *actionSettings;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
-    MinesFieldScrollableWidget *widget;
-    QVBoxLayout *verticalLayout;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
+    MinesFieldScrollableWidget *minesFieldScrollableWidget;
     QMenuBar *menubar;
+    QMenu *menuNew_game;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -42,38 +41,33 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(800, 600);
+        actionNew_game = new QAction(MainWindow);
+        actionNew_game->setObjectName(QStringLiteral("actionNew_game"));
+        actionSettings = new QAction(MainWindow);
+        actionSettings->setObjectName(QStringLiteral("actionSettings"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        widget = new MinesFieldScrollableWidget(centralwidget);
-        widget->setObjectName(QStringLiteral("widget"));
+        minesFieldScrollableWidget = new MinesFieldScrollableWidget(centralwidget);
+        minesFieldScrollableWidget->setObjectName(QStringLiteral("minesFieldScrollableWidget"));
 
-        horizontalLayout->addWidget(widget);
-
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-
-        verticalLayout->addWidget(pushButton);
-
-        pushButton_2 = new QPushButton(centralwidget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-
-        verticalLayout->addWidget(pushButton_2);
-
-
-        horizontalLayout->addLayout(verticalLayout);
+        horizontalLayout->addWidget(minesFieldScrollableWidget);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
         menubar->setGeometry(QRect(0, 0, 800, 19));
+        menuNew_game = new QMenu(menubar);
+        menuNew_game->setObjectName(QStringLiteral("menuNew_game"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
         MainWindow->setStatusBar(statusbar);
+
+        menubar->addAction(menuNew_game->menuAction());
+        menuNew_game->addAction(actionNew_game);
+        menuNew_game->addAction(actionSettings);
 
         retranslateUi(MainWindow);
 
@@ -83,8 +77,9 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "PushButton", 0));
-        pushButton_2->setText(QApplication::translate("MainWindow", "PushButton", 0));
+        actionNew_game->setText(QApplication::translate("MainWindow", "New game", 0));
+        actionSettings->setText(QApplication::translate("MainWindow", "Settings", 0));
+        menuNew_game->setTitle(QApplication::translate("MainWindow", "Menu", 0));
     } // retranslateUi
 
 };

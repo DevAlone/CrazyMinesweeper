@@ -6,6 +6,8 @@
 struct MinesFieldWidgetSettings {
     QColor backgroundColor;
     QColor cellColor;
+
+    bool isZoomEnabled = false;
 };
 
 #endif // MINESFIELDWIDGETSETTINGS_H

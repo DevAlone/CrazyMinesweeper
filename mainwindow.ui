@@ -16,25 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="MinesFieldScrollableWidget" name="widget" native="true"/>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="MinesFieldScrollableWidget" name="minesFieldScrollableWidget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -47,8 +29,26 @@
      <height>19</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuNew_game">
+    <property name="title">
+     <string>Menu</string>
+    </property>
+    <addaction name="actionNew_game"/>
+    <addaction name="actionSettings"/>
+   </widget>
+   <addaction name="menuNew_game"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNew_game">
+   <property name="text">
+    <string>New game</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

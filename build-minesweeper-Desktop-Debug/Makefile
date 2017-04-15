@@ -51,28 +51,30 @@ OBJECTS_DIR   = ./
 SOURCES       = ../main.cpp \
 		../minesfield.cpp \
 		../minesfieldwidget.cpp \
-		../size.cpp \
 		../point.cpp \
 		../minesfieldwidgetsettings.cpp \
 		../cell.cpp \
 		../mainwindow.cpp \
-		../minesfieldscrollablewidget.cpp moc_minesfield.cpp \
+		../minesfieldscrollablewidget.cpp \
+		../newgamedialog.cpp moc_minesfield.cpp \
 		moc_minesfieldwidget.cpp \
 		moc_mainwindow.cpp \
-		moc_minesfieldscrollablewidget.cpp
+		moc_minesfieldscrollablewidget.cpp \
+		moc_newgamedialog.cpp
 OBJECTS       = main.o \
 		minesfield.o \
 		minesfieldwidget.o \
-		size.o \
 		point.o \
 		minesfieldwidgetsettings.o \
 		cell.o \
 		mainwindow.o \
 		minesfieldscrollablewidget.o \
+		newgamedialog.o \
 		moc_minesfield.o \
 		moc_minesfieldwidget.o \
 		moc_mainwindow.o \
-		moc_minesfieldscrollablewidget.o
+		moc_minesfieldscrollablewidget.o \
+		moc_newgamedialog.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -134,20 +136,20 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../../minesweeper.pro ../minesfield.h \
 		../minesfieldwidget.h \
-		../size.h \
 		../point.h \
 		../minesfieldwidgetsettings.h \
 		../cell.h \
 		../mainwindow.h \
-		../minesfieldscrollablewidget.h ../main.cpp \
+		../minesfieldscrollablewidget.h \
+		../newgamedialog.h ../main.cpp \
 		../minesfield.cpp \
 		../minesfieldwidget.cpp \
-		../size.cpp \
 		../point.cpp \
 		../minesfieldwidgetsettings.cpp \
 		../cell.cpp \
 		../mainwindow.cpp \
-		../minesfieldscrollablewidget.cpp
+		../minesfieldscrollablewidget.cpp \
+		../newgamedialog.cpp
 QMAKE_TARGET  = minesweeper
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = minesweeper
@@ -175,7 +177,7 @@ first: all
 
 ####### Build rules
 
-$(TARGET): ui_mainwindow.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_newgamedialog.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../minesweeper.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -319,9 +321,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../minesfield.h ../minesfieldwidget.h ../size.h ../point.h ../minesfieldwidgetsettings.h ../cell.h ../mainwindow.h ../minesfieldscrollablewidget.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../main.cpp ../minesfield.cpp ../minesfieldwidget.cpp ../size.cpp ../point.cpp ../minesfieldwidgetsettings.cpp ../cell.cpp ../mainwindow.cpp ../minesfieldscrollablewidget.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../mainwindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../minesfield.h ../minesfieldwidget.h ../point.h ../minesfieldwidgetsettings.h ../cell.h ../mainwindow.h ../minesfieldscrollablewidget.h ../newgamedialog.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../main.cpp ../minesfield.cpp ../minesfieldwidget.cpp ../point.cpp ../minesfieldwidgetsettings.cpp ../cell.cpp ../mainwindow.cpp ../minesfieldscrollablewidget.cpp ../newgamedialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../mainwindow.ui ../newgamedialog.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -344,43 +346,51 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp
+compiler_moc_header_make_all: moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp moc_newgamedialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp
+	-$(DEL_FILE) moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp moc_newgamedialog.cpp
 moc_minesfield.cpp: ../cell.h \
 		../point.h \
-		../size.h \
 		../minesfield.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../minesfield.h -o moc_minesfield.cpp
 
 moc_minesfieldwidget.cpp: ../minesfield.h \
 		../cell.h \
 		../point.h \
-		../size.h \
 		../minesfieldwidgetsettings.h \
 		../minesfieldwidget.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../minesfieldwidget.h -o moc_minesfieldwidget.cpp
 
-moc_mainwindow.cpp: ../mainwindow.h
+moc_mainwindow.cpp: ../minesfieldwidget.h \
+		../minesfield.h \
+		../cell.h \
+		../point.h \
+		../minesfieldwidgetsettings.h \
+		../mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../mainwindow.h -o moc_mainwindow.cpp
 
 moc_minesfieldscrollablewidget.cpp: ../minesfieldwidget.h \
 		../minesfield.h \
 		../cell.h \
 		../point.h \
-		../size.h \
 		../minesfieldwidgetsettings.h \
 		../minesfieldscrollablewidget.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../minesfieldscrollablewidget.h -o moc_minesfieldscrollablewidget.cpp
 
+moc_newgamedialog.cpp: ../newgamedialog.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../newgamedialog.h -o moc_newgamedialog.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: ui_mainwindow.h ui_newgamedialog.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
+	-$(DEL_FILE) ui_mainwindow.h ui_newgamedialog.h
 ui_mainwindow.h: ../mainwindow.ui \
 		../minesfieldscrollablewidget.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../mainwindow.ui -o ui_mainwindow.h
+
+ui_newgamedialog.h: ../newgamedialog.ui
+	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../newgamedialog.ui -o ui_newgamedialog.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -393,30 +403,24 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 ####### Compile
 
 main.o: ../main.cpp ../mainwindow.h \
+		../minesfieldwidget.h \
 		../minesfield.h \
 		../cell.h \
 		../point.h \
-		../size.h \
-		../minesfieldwidget.h \
 		../minesfieldwidgetsettings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../main.cpp
 
 minesfield.o: ../minesfield.cpp ../minesfield.h \
 		../cell.h \
-		../point.h \
-		../size.h
+		../point.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfield.o ../minesfield.cpp
 
 minesfieldwidget.o: ../minesfieldwidget.cpp ../minesfieldwidget.h \
 		../minesfield.h \
 		../cell.h \
 		../point.h \
-		../size.h \
 		../minesfieldwidgetsettings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfieldwidget.o ../minesfieldwidget.cpp
-
-size.o: ../size.cpp ../size.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o size.o ../size.cpp
 
 point.o: ../point.cpp ../point.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o point.o ../point.cpp
@@ -428,7 +432,14 @@ cell.o: ../cell.cpp ../cell.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cell.o ../cell.cpp
 
 mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
-		ui_mainwindow.h
+		../minesfieldwidget.h \
+		../minesfield.h \
+		../cell.h \
+		../point.h \
+		../minesfieldwidgetsettings.h \
+		../newgamedialog.h \
+		ui_mainwindow.h \
+		../minesfieldscrollablewidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
 minesfieldscrollablewidget.o: ../minesfieldscrollablewidget.cpp ../minesfieldscrollablewidget.h \
@@ -436,9 +447,12 @@ minesfieldscrollablewidget.o: ../minesfieldscrollablewidget.cpp ../minesfieldscr
 		../minesfield.h \
 		../cell.h \
 		../point.h \
-		../size.h \
 		../minesfieldwidgetsettings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfieldscrollablewidget.o ../minesfieldscrollablewidget.cpp
+
+newgamedialog.o: ../newgamedialog.cpp ../newgamedialog.h \
+		ui_newgamedialog.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o newgamedialog.o ../newgamedialog.cpp
 
 moc_minesfield.o: moc_minesfield.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_minesfield.o moc_minesfield.cpp
@@ -451,6 +465,9 @@ moc_mainwindow.o: moc_mainwindow.cpp
 
 moc_minesfieldscrollablewidget.o: moc_minesfieldscrollablewidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_minesfieldscrollablewidget.o moc_minesfieldscrollablewidget.cpp
+
+moc_newgamedialog.o: moc_newgamedialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_newgamedialog.o moc_newgamedialog.cpp
 
 ####### Install
 

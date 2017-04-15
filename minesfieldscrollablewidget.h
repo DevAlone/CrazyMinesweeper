@@ -10,6 +10,8 @@ class MinesFieldScrollableWidget : public QWidget {
 public:
     explicit MinesFieldScrollableWidget(QWidget* parent = 0);
 
+    MinesFieldWidget* getMinesFieldWidget() const;
+
 signals:
 
 public slots:

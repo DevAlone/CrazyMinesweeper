@@ -27,26 +27,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
     minesfield.cpp \
     minesfieldwidget.cpp \
-    size.cpp \
     point.cpp \
     minesfieldwidgetsettings.cpp \
     cell.cpp \
     mainwindow.cpp \
-    minesfieldscrollablewidget.cpp
+    minesfieldscrollablewidget.cpp \
+    newgamedialog.cpp
 
 HEADERS  += \
     minesfield.h \
     minesfieldwidget.h \
-    size.h \
     point.h \
     minesfieldwidgetsettings.h \
     cell.h \
     mainwindow.h \
-    minesfieldscrollablewidget.h
+    minesfieldscrollablewidget.h \
+    newgamedialog.h
 
 # FORMS    +=
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    newgamedialog.ui
 
 
