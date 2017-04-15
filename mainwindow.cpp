@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
 
     minesFieldWidget = ui->minesFieldScrollableWidget->getMinesFieldWidget();
-    minesField = std::make_shared<MinesField>(20, 20);
+    minesField = std::shared_ptr<MinesField>(new MinesField(20, 20, 20));
     minesFieldWidget->setField(minesField);
     minesFieldWidget->setCellSize(QSize(25, 25));
     minesFieldWidget->setBorderSize(QSize(0, 0));
@@ -44,7 +44,8 @@ void MainWindow::on_actionNew_game_triggered()
     if (dialog.exec() == QDialog::Accepted) {
         auto data = dialog.getEnteredData();
 
-        minesField = std::make_shared<MinesField>(data.fieldSize.width(), data.fieldSize.height());
+        minesField = std::shared_ptr<MinesField>(
+            new MinesField(data.fieldSize.width(), data.fieldSize.height(), data.minesPercent));
         minesFieldWidget->setField(minesField);
 
         connect(minesField.get(), SIGNAL(userLost()), this, SLOT(loseGame()));

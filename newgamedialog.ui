@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>355</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -119,6 +119,20 @@
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>mines percent</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="minesPercent"/>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QDialogButtonBox" name="buttonBox">

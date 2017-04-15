@@ -438,8 +438,7 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../point.h \
 		../minesfieldwidgetsettings.h \
 		../newgamedialog.h \
-		ui_mainwindow.h \
-		../minesfieldscrollablewidget.h
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
 minesfieldscrollablewidget.o: ../minesfieldscrollablewidget.cpp ../minesfieldscrollablewidget.h \

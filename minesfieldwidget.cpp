@@ -1,19 +1,18 @@
 #include "minesfieldwidget.h"
+#include <QDebug>
 
 MinesFieldWidget::MinesFieldWidget(QWidget* parent)
     : QWidget(parent)
 {
-    int cols = 1000, rows = 1000; // TODO: delete this
     settings.backgroundColor = Qt::gray;
-    settings.cellColor = Qt::white;
+    settings.closedCellColor = Qt::white;
 
-    field = std::make_unique<MinesField>(rows, cols);
     connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
     // TODO: fix it
     cellSize = QSize(1, 1);
     borderSize = QSize(0, 0);
-    fieldSize = QSize(cols * (cellSize.width() + borderSize.width()),
-        rows * (cellSize.height() + borderSize.height()));
+    //    fieldSize = QSize(cols * (cellSize.width() + borderSize.width()),
+    //        rows * (cellSize.height() + borderSize.height()));
 
     viewport.x = 0;
     viewport.y = 0;
@@ -276,27 +275,25 @@ void MinesFieldWidget::updatePixmap()
             QColor color;
             switch (cell.cellState()) {
             case Cell::CellState::Closed:
-                color = Qt::white;
+                color = settings.closedCellColor;
                 break;
             case Cell::CellState::Opened:
                 if (minesAroundCell == 0)
-                    color = Qt::gray;
+                    color = settings.backgroundColor;
                 else
+                    // TODO: make smart algorithm
                     color = QColor(0, 100.0 + 155.0 * (8 - minesAroundCell) / 8.0, 0);
 
                 break;
             case Cell::CellState::MarkedAsBomb:
-                color = Qt::yellow;
+                color = settings.markedAsBombColor;
                 break;
             case Cell::CellState::MarkedAsQuestion:
-                color = Qt::blue;
+                color = settings.markedAsQuestionColor;
                 break;
             default:
                 break;
             }
-
-            //            if (cell.isMine())
-            //                color = Qt::red;
 
             painter.fillRect((x - viewport.start_col) * stepX + borderSize.width(),
                 (y - viewport.start_row) * stepY + borderSize.height(),
@@ -305,6 +302,7 @@ void MinesFieldWidget::updatePixmap()
                 color);
         }
     }
+
     update();
 }
 
@@ -340,14 +338,5 @@ void MinesFieldWidget::scrollPosChanged(int horizontal_pos, int vertical_pos)
     viewport.start_row = vertical_pos;
     viewport.x = horizontal_pos * (cellSize.width() + borderSize.width());
     viewport.y = vertical_pos * (cellSize.height() + borderSize.height());
-    updatePixmap();
-}
-
-void MinesFieldWidget::userLose()
-{
-    QMessageBox::warning(this, "you lose", "you lose");
-
-    field = std::make_unique<MinesField>(field->getRows(), field->getCols());
-    connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
     updatePixmap();
 }

@@ -10,7 +10,7 @@
 class MinesField : public QObject {
     Q_OBJECT
 public:
-    MinesField(unsigned rows, unsigned cols);
+    MinesField(unsigned rows, unsigned cols, unsigned char minesPercents);
 
     void lazyOpenCells(const Point& point);
     void tryToOpenCell(const Point& point);
@@ -34,6 +34,11 @@ public:
     bool isCellIndexValid(long index) const
     {
         return index >= 0 && index < cells.size();
+    }
+    bool isCellPointValid(const Point& point) const
+    {
+        return point.x() >= 0 && point.x() < cols
+            && point.y() >= 0 && point.y() < rows;
     }
     inline std::vector<Point> getAroundCells(const Point& cell) const;
 

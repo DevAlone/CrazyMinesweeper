@@ -1,17 +1,19 @@
 #include "newgamedialog.h"
 #include "ui_newgamedialog.h"
 
+// TODO: make saving previous state
 NewGameDialog::NewGameDialog(QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::NewGameDialog)
 {
     ui->setupUi(this);
-    ui->fieldWidth->setValidator(new QIntValidator(1, 10000));
-    ui->fieldHeight->setValidator(new QIntValidator(1, 10000));
-    ui->cellWidth->setValidator(new QIntValidator(1, 100));
-    ui->cellHeight->setValidator(new QIntValidator(1, 100));
-    ui->borderWidth->setValidator(new QIntValidator(1, 100));
-    ui->borderHeight->setValidator(new QIntValidator(1, 100));
+    ui->fieldWidth->setValidator(new QIntValidator(1, 10000, this));
+    ui->fieldHeight->setValidator(new QIntValidator(1, 10000, this));
+    ui->cellWidth->setValidator(new QIntValidator(1, 100, this));
+    ui->cellHeight->setValidator(new QIntValidator(1, 100, this));
+    ui->borderWidth->setValidator(new QIntValidator(1, 100, this));
+    ui->borderHeight->setValidator(new QIntValidator(1, 100, this));
+    ui->minesPercent->setValidator(new QIntValidator(1, 100, this));
 
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(updateData()));
 
@@ -54,6 +56,12 @@ void NewGameDialog::updateData()
         data.borderSize.setWidth(0);
     if (data.borderSize.height() < 0)
         data.borderSize.setHeight(0);
+
+    data.minesPercent = ui->minesPercent->text().toInt();
+    if (data.minesPercent < 1)
+        data.minesPercent = 1;
+    else if (data.minesPercent > 100)
+        data.minesPercent = 100;
 }
 
 void NewGameDialog::on_pushButtonEasy_clicked()
@@ -61,6 +69,7 @@ void NewGameDialog::on_pushButtonEasy_clicked()
     data.fieldSize = QSize(25, 25);
     data.cellSize = QSize(30, 30);
     data.borderSize = QSize(0, 0);
+    data.minesPercent = 20;
 
     accept();
 }
@@ -70,6 +79,7 @@ void NewGameDialog::on_pushButtonLIttleHarder_clicked()
     data.fieldSize = QSize(50, 50);
     data.cellSize = QSize(25, 25);
     data.borderSize = QSize(1, 1);
+    data.minesPercent = 20;
 
     accept();
 }
@@ -79,6 +89,7 @@ void NewGameDialog::on_pushButtonAsianMode_clicked()
     data.fieldSize = QSize(1000, 1000);
     data.cellSize = QSize(1, 1);
     data.borderSize = QSize(0, 0);
+    data.minesPercent = 10;
 
     accept();
 }

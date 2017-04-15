@@ -5,11 +5,13 @@
 #include <queue>
 #include <set>
 
-MinesField::MinesField(unsigned rows, unsigned cols)
+MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
     : rows(rows)
     , cols(cols)
 {
-    minesPercents = 0.2;
+    if (minesPercents > 100)
+        minesPercents = 100;
+    minesPercents = double(mp) / 100.0;
 
     cells = std::vector<Cell>(rows * cols);
     minesLeft = minesCount = rows * cols * minesPercents;
@@ -59,7 +61,7 @@ MinesField::MinesField(unsigned rows, unsigned cols)
             break;
         }
     }
-    for (unsigned i = cells.size() / 2; i >= 0 && !first_cell_opened; i--) {
+    for (long i = cells.size() / 2; i >= 0 && !first_cell_opened; i--) {
         if (!cells.at(i).isMine()) {
             tryToOpenCell(getCellPoint(i));
             break;
@@ -71,6 +73,9 @@ void MinesField::lazyOpenCells(const Point& point)
 {
     if (lost)
         return;
+    if (!isCellPointValid(point))
+        return;
+
     Cell* cell;
     try {
         cell = getCell(point);
@@ -116,6 +121,9 @@ void MinesField::tryToOpenCell(const Point& point)
 {
     if (lost)
         return;
+    if (!isCellPointValid(point))
+        return;
+
     unsigned cellIndex = getCellIndex(point);
 
     if (!isCellIndexValid(cellIndex))
@@ -164,6 +172,9 @@ void MinesField::markCell(const Point& point, Cell::CellState markAs)
 {
     if (lost)
         return;
+    if (!isCellPointValid(point))
+        return;
+
     unsigned index = getCellIndex(point);
     if (!isCellIndexValid(index))
         return;
@@ -182,6 +193,8 @@ void MinesField::markCell(const Point& point, Cell::CellState markAs)
         cell.setCellState(Cell::CellState::MarkedAsQuestion);
         minesLeft++;
         break;
+    default:
+        break;
     }
 }
 
@@ -189,6 +202,9 @@ void MinesField::unmarkCell(const Point& point)
 {
     if (lost)
         return;
+    if (!isCellPointValid(point))
+        return;
+
     unsigned index = getCellIndex(point);
     if (!isCellIndexValid(index))
         return;

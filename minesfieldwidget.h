@@ -37,7 +37,6 @@ public slots:
     void verticalScrollPosChanged(int pos);
     void horizontalScrollPosChanged(int pos);
     void scrollPosChanged(int horizontal_pos, int vertical_pos);
-    void userLose();
 
 protected:
     void paintEvent(QPaintEvent* event);

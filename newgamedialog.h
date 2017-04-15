@@ -7,6 +7,7 @@ struct NewGameDialogData {
     QSize fieldSize,
         cellSize,
         borderSize;
+    unsigned char minesPercent;
 };
 
 namespace Ui {

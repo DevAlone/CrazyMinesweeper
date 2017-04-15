@@ -4,8 +4,11 @@
 #include <QColor>
 
 struct MinesFieldWidgetSettings {
-    QColor backgroundColor;
-    QColor cellColor;
+    QColor backgroundColor = Qt::gray;
+    QColor closedCellColor = Qt::white;
+    QColor markedAsBombColor = Qt::red;
+    QColor markedAsQuestionColor = Qt::yellow;
+    QColor borderColor = Qt::black;
 
     bool isZoomEnabled = false;
 };
