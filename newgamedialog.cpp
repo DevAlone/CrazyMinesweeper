@@ -18,6 +18,17 @@ NewGameDialog::NewGameDialog(QWidget* parent)
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(updateData()));
 
     ui->stackedWidget->setCurrentIndex(1);
+
+    ui->fieldWidth->setText("10");
+    ui->fieldHeight->setText("10");
+
+    ui->cellWidth->setText("30");
+    ui->cellHeight->setText("30");
+
+    ui->borderWidth->setText("0");
+    ui->borderHeight->setText("0");
+
+    ui->minesPercent->setText("20");
 }
 
 NewGameDialog::~NewGameDialog()

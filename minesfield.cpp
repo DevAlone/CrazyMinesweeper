@@ -71,7 +71,9 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
 
 void MinesField::lazyOpenCells(const Point& point)
 {
-    if (lost)
+    checkForWin();
+
+    if (lost || won)
         return;
     if (!isCellPointValid(point))
         return;
@@ -108,6 +110,8 @@ void MinesField::lazyOpenCells(const Point& point)
     for (auto mine : minesAround) {
         tryToOpenCell(mine);
     }
+
+    checkForWin();
 }
 
 void MinesField::loseGame()
@@ -117,9 +121,33 @@ void MinesField::loseGame()
     emit userLost();
 }
 
+bool MinesField::isUserWon()
+{
+    if (minesLeft != 0)
+        return false;
+    for (const auto& cell : cells) {
+        if (cell.isMine()) {
+            if (cell.cellState() != Cell::CellState::MarkedAsBomb)
+                return false;
+        } else if (cell.cellState() != Cell::CellState::Opened)
+            return false;
+    }
+    return true;
+}
+
+void MinesField::checkForWin()
+{
+    if (minesLeft == 0) {
+        if (!won && (won = isUserWon()))
+            emit userWon();
+    }
+}
+
 void MinesField::tryToOpenCell(const Point& point)
 {
-    if (lost)
+    checkForWin();
+
+    if (lost || won)
         return;
     if (!isCellPointValid(point))
         return;
@@ -162,15 +190,14 @@ void MinesField::tryToOpenCell(const Point& point)
             }
         }
     }
-    //    qDebug() << "!";
-    //    for (auto val : result)
-    //        qDebug() << val.x() << val.y();
-    //    qDebug() << "?";
+    checkForWin();
 }
 
 void MinesField::markCell(const Point& point, Cell::CellState markAs)
 {
-    if (lost)
+    checkForWin();
+
+    if (lost || won)
         return;
     if (!isCellPointValid(point))
         return;
@@ -196,11 +223,14 @@ void MinesField::markCell(const Point& point, Cell::CellState markAs)
     default:
         break;
     }
+
+    checkForWin();
 }
 
 void MinesField::unmarkCell(const Point& point)
 {
-    if (lost)
+    checkForWin();
+    if (lost || won)
         return;
     if (!isCellPointValid(point))
         return;
@@ -215,6 +245,7 @@ void MinesField::unmarkCell(const Point& point)
 
     cell.setCellState(Cell::CellState::Closed);
     minesLeft++;
+    checkForWin();
 }
 
 unsigned MinesField::getMinesCount() const

@@ -38,6 +38,8 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
 
     painter.drawPixmap(0, 0, pixmap);
 
+    int startDrawingPosY = 0;
+    double popupWidth = width() * 0.25;
     if (settings.isZoomEnabled && mousePos.x() >= 0 && mousePos.x() < pixmap.width()
         && mousePos.y() >= 0 && mousePos.y() < pixmap.height()) {
         // TODO: optimize this, maybe add checks for out of range
@@ -46,7 +48,7 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
                                       mousePos.y() - zoomArea.height() / 2,
                                       zoomArea.width(),
                                       zoomArea.height())
-                                .scaled(width() * 0.4, width() * 0.4);
+                                .scaled(popupWidth, popupWidth);
         int centerRectWidth = zoomedPixmap.width() / zoomArea.width();
         int centerRectHeight = zoomedPixmap.height() / zoomArea.height();
 
@@ -56,7 +58,32 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
             centerRectWidth,
             centerRectHeight);
         p1.drawRect(0, 0, zoomedPixmap.width() - 1, zoomedPixmap.height() - 1);
-        painter.drawPixmap(width() * 0.6, 0, zoomedPixmap);
+        painter.drawPixmap(width() - zoomedPixmap.width(), 0, zoomedPixmap);
+        startDrawingPosY += zoomedPixmap.height();
+    }
+    if (settings.isHintsEnabled) {
+        int cellWidth = popupWidth / 8.0;
+        QPixmap hintsPixmap(popupWidth, cellWidth * 2);
+        hintsPixmap.fill(settings.backgroundColor);
+        QPainter p1(&hintsPixmap);
+
+        for (int i = 0; i < 8; i++) {
+            int minesAroundCell = i + 1;
+            auto color = QColor((9 - minesAroundCell) / 8.0 * settings.minesAroundColor.red(),
+                (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.green(),
+                (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.blue());
+            p1.setBrush(color);
+            p1.setPen(Qt::transparent);
+            p1.drawRect(i * (cellWidth), 0, cellWidth, cellWidth);
+
+            p1.setPen(QColor::fromRgb(255 - settings.backgroundColor.red(),
+                255 - settings.backgroundColor.green(),
+                255 - settings.backgroundColor.blue()));
+            p1.drawText(i * cellWidth, 1.75 * cellWidth, QString::number(minesAroundCell));
+        }
+        p1.setBrush(Qt::transparent);
+        p1.drawRect(0, 0, popupWidth - 1, 2 * cellWidth - 1);
+        painter.drawPixmap(width() - popupWidth, startDrawingPosY, hintsPixmap);
     }
 
     event->accept();

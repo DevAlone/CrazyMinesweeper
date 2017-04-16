@@ -13,6 +13,7 @@ struct MinesFieldWidgetSettings {
     QColor minesAroundColor = QColor::fromRgb(0, 255, 0);
 
     bool isZoomEnabled = false;
+    bool isHintsEnabled = true;
 };
 
 #endif // MINESFIELDWIDGETSETTINGS_H

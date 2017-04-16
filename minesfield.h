@@ -58,6 +58,9 @@ private:
     bool lost = false;
     bool won = false;
     void loseGame();
+
+    bool isUserWon();
+    void checkForWin();
 };
 
 #endif // MINESFIELD_H

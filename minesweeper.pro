@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     minesfieldscrollablewidget.cpp \
     newgamedialog.cpp \
     minesfieldsettingsdialog.cpp \
-    colorchoosebutton.cpp
+    colorchoosebutton.cpp \
+    wongamedialog.cpp
 
 HEADERS  += \
     minesfield.h \
@@ -46,13 +47,15 @@ HEADERS  += \
     minesfieldscrollablewidget.h \
     newgamedialog.h \
     minesfieldsettingsdialog.h \
-    colorchoosebutton.h
+    colorchoosebutton.h \
+    wongamedialog.h
 
 # FORMS    +=
 
 FORMS += \
     mainwindow.ui \
     newgamedialog.ui \
-    minesfieldsettingsdialog.ui
+    minesfieldsettingsdialog.ui \
+    wongamedialog.ui
 
 

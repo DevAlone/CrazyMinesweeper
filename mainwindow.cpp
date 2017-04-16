@@ -2,6 +2,7 @@
 #include "minesfieldsettingsdialog.h"
 #include "newgamedialog.h"
 #include "ui_mainwindow.h"
+#include "wongamedialog.h"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget* parent)
     minesFieldWidget->setBorderSize(QSize(0, 0));
 
     connect(minesField.get(), SIGNAL(userLost()), this, SLOT(loseGame()));
+    connect(minesField.get(), SIGNAL(userWon()), this, SLOT(wonGame()));
 }
 
 MainWindow::~MainWindow()
@@ -29,8 +31,17 @@ void MainWindow::keyPressEvent(QKeyEvent*)
 
 void MainWindow::loseGame()
 {
-    qDebug() << "you lose";
+    QMessageBox::warning(this, "looser", "you lose, lol");
     on_actionNew_game_triggered();
+}
+
+void MainWindow::wonGame()
+{
+    WonGameDialog dialog;
+
+    if (dialog.exec() == QDialog::Accepted) {
+        on_actionNew_game_triggered();
+    }
 }
 
 //bool MainWindow::event(QEvent* event)
@@ -50,6 +61,7 @@ void MainWindow::on_actionNew_game_triggered()
         minesFieldWidget->setField(minesField);
 
         connect(minesField.get(), SIGNAL(userLost()), this, SLOT(loseGame()));
+        connect(minesField.get(), SIGNAL(userWon()), this, SLOT(wonGame()));
 
         minesFieldWidget->setCellSize(data.cellSize);
         minesFieldWidget->setBorderSize(data.borderSize);

@@ -21,6 +21,7 @@ protected:
     //    bool event(QEvent* event);
 public slots:
     void loseGame();
+    void wonGame();
 private slots:
     void on_actionNew_game_triggered();
 

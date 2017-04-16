@@ -13,8 +13,10 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -27,6 +29,8 @@ QT_BEGIN_NAMESPACE
 class Ui_MinesFieldSettingsDialog
 {
 public:
+    QVBoxLayout *verticalLayout_2;
+    QGroupBox *groupBox;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
@@ -56,18 +60,24 @@ public:
     QLabel *label_7;
     QSpacerItem *horizontalSpacer_7;
     ColorChooseButton *minesAroundColorButton;
+    QCheckBox *showZoom;
+    QCheckBox *showHints;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *MinesFieldSettingsDialog)
     {
         if (MinesFieldSettingsDialog->objectName().isEmpty())
             MinesFieldSettingsDialog->setObjectName(QStringLiteral("MinesFieldSettingsDialog"));
-        MinesFieldSettingsDialog->resize(423, 313);
-        verticalLayout = new QVBoxLayout(MinesFieldSettingsDialog);
+        MinesFieldSettingsDialog->resize(295, 291);
+        verticalLayout_2 = new QVBoxLayout(MinesFieldSettingsDialog);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        groupBox = new QGroupBox(MinesFieldSettingsDialog);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        verticalLayout = new QVBoxLayout(groupBox);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        label = new QLabel(MinesFieldSettingsDialog);
+        label = new QLabel(groupBox);
         label->setObjectName(QStringLiteral("label"));
 
         horizontalLayout->addWidget(label);
@@ -76,7 +86,7 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        backgroundColorButton = new ColorChooseButton(MinesFieldSettingsDialog);
+        backgroundColorButton = new ColorChooseButton(groupBox);
         backgroundColorButton->setObjectName(QStringLiteral("backgroundColorButton"));
 
         horizontalLayout->addWidget(backgroundColorButton);
@@ -86,7 +96,7 @@ public:
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        label_2 = new QLabel(MinesFieldSettingsDialog);
+        label_2 = new QLabel(groupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
 
         horizontalLayout_2->addWidget(label_2);
@@ -95,7 +105,7 @@ public:
 
         horizontalLayout_2->addItem(horizontalSpacer_2);
 
-        openedCellColorButton = new ColorChooseButton(MinesFieldSettingsDialog);
+        openedCellColorButton = new ColorChooseButton(groupBox);
         openedCellColorButton->setObjectName(QStringLiteral("openedCellColorButton"));
 
         horizontalLayout_2->addWidget(openedCellColorButton);
@@ -105,7 +115,7 @@ public:
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        label_3 = new QLabel(MinesFieldSettingsDialog);
+        label_3 = new QLabel(groupBox);
         label_3->setObjectName(QStringLiteral("label_3"));
 
         horizontalLayout_3->addWidget(label_3);
@@ -114,7 +124,7 @@ public:
 
         horizontalLayout_3->addItem(horizontalSpacer_3);
 
-        closedCellColorButton = new ColorChooseButton(MinesFieldSettingsDialog);
+        closedCellColorButton = new ColorChooseButton(groupBox);
         closedCellColorButton->setObjectName(QStringLiteral("closedCellColorButton"));
 
         horizontalLayout_3->addWidget(closedCellColorButton);
@@ -124,7 +134,7 @@ public:
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        label_4 = new QLabel(MinesFieldSettingsDialog);
+        label_4 = new QLabel(groupBox);
         label_4->setObjectName(QStringLiteral("label_4"));
 
         horizontalLayout_4->addWidget(label_4);
@@ -133,7 +143,7 @@ public:
 
         horizontalLayout_4->addItem(horizontalSpacer_4);
 
-        markedAsBombColorButton = new ColorChooseButton(MinesFieldSettingsDialog);
+        markedAsBombColorButton = new ColorChooseButton(groupBox);
         markedAsBombColorButton->setObjectName(QStringLiteral("markedAsBombColorButton"));
 
         horizontalLayout_4->addWidget(markedAsBombColorButton);
@@ -143,7 +153,7 @@ public:
 
         horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
-        label_5 = new QLabel(MinesFieldSettingsDialog);
+        label_5 = new QLabel(groupBox);
         label_5->setObjectName(QStringLiteral("label_5"));
 
         horizontalLayout_5->addWidget(label_5);
@@ -152,7 +162,7 @@ public:
 
         horizontalLayout_5->addItem(horizontalSpacer_5);
 
-        markedAsQuestionColorButton = new ColorChooseButton(MinesFieldSettingsDialog);
+        markedAsQuestionColorButton = new ColorChooseButton(groupBox);
         markedAsQuestionColorButton->setObjectName(QStringLiteral("markedAsQuestionColorButton"));
 
         horizontalLayout_5->addWidget(markedAsQuestionColorButton);
@@ -162,7 +172,7 @@ public:
 
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
-        label_6 = new QLabel(MinesFieldSettingsDialog);
+        label_6 = new QLabel(groupBox);
         label_6->setObjectName(QStringLiteral("label_6"));
 
         horizontalLayout_6->addWidget(label_6);
@@ -171,7 +181,7 @@ public:
 
         horizontalLayout_6->addItem(horizontalSpacer_6);
 
-        borderColorButton = new ColorChooseButton(MinesFieldSettingsDialog);
+        borderColorButton = new ColorChooseButton(groupBox);
         borderColorButton->setObjectName(QStringLiteral("borderColorButton"));
 
         horizontalLayout_6->addWidget(borderColorButton);
@@ -181,7 +191,7 @@ public:
 
         horizontalLayout_7 = new QHBoxLayout();
         horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
-        label_7 = new QLabel(MinesFieldSettingsDialog);
+        label_7 = new QLabel(groupBox);
         label_7->setObjectName(QStringLiteral("label_7"));
 
         horizontalLayout_7->addWidget(label_7);
@@ -190,7 +200,7 @@ public:
 
         horizontalLayout_7->addItem(horizontalSpacer_7);
 
-        minesAroundColorButton = new ColorChooseButton(MinesFieldSettingsDialog);
+        minesAroundColorButton = new ColorChooseButton(groupBox);
         minesAroundColorButton->setObjectName(QStringLiteral("minesAroundColorButton"));
 
         horizontalLayout_7->addWidget(minesAroundColorButton);
@@ -198,12 +208,25 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_7);
 
+
+        verticalLayout_2->addWidget(groupBox);
+
+        showZoom = new QCheckBox(MinesFieldSettingsDialog);
+        showZoom->setObjectName(QStringLiteral("showZoom"));
+
+        verticalLayout_2->addWidget(showZoom);
+
+        showHints = new QCheckBox(MinesFieldSettingsDialog);
+        showHints->setObjectName(QStringLiteral("showHints"));
+
+        verticalLayout_2->addWidget(showHints);
+
         buttonBox = new QDialogButtonBox(MinesFieldSettingsDialog);
         buttonBox->setObjectName(QStringLiteral("buttonBox"));
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
 
-        verticalLayout->addWidget(buttonBox);
+        verticalLayout_2->addWidget(buttonBox);
 
 #ifndef QT_NO_SHORTCUT
         label->setBuddy(backgroundColorButton);
@@ -225,20 +248,23 @@ public:
     void retranslateUi(QDialog *MinesFieldSettingsDialog)
     {
         MinesFieldSettingsDialog->setWindowTitle(QApplication::translate("MinesFieldSettingsDialog", "Dialog", 0));
-        label->setText(QApplication::translate("MinesFieldSettingsDialog", "background color", 0));
+        groupBox->setTitle(QApplication::translate("MinesFieldSettingsDialog", "Colors", 0));
+        label->setText(QApplication::translate("MinesFieldSettingsDialog", "background", 0));
         backgroundColorButton->setText(QApplication::translate("MinesFieldSettingsDialog", "choose", 0));
-        label_2->setText(QApplication::translate("MinesFieldSettingsDialog", "opened cell color", 0));
+        label_2->setText(QApplication::translate("MinesFieldSettingsDialog", "opened cell", 0));
         openedCellColorButton->setText(QApplication::translate("MinesFieldSettingsDialog", "choose", 0));
-        label_3->setText(QApplication::translate("MinesFieldSettingsDialog", "closed cell color", 0));
+        label_3->setText(QApplication::translate("MinesFieldSettingsDialog", "closed cell", 0));
         closedCellColorButton->setText(QApplication::translate("MinesFieldSettingsDialog", "choose", 0));
-        label_4->setText(QApplication::translate("MinesFieldSettingsDialog", "marked as bomb color", 0));
+        label_4->setText(QApplication::translate("MinesFieldSettingsDialog", "marked as bomb", 0));
         markedAsBombColorButton->setText(QApplication::translate("MinesFieldSettingsDialog", "choose", 0));
         label_5->setText(QApplication::translate("MinesFieldSettingsDialog", "marked as question", 0));
         markedAsQuestionColorButton->setText(QApplication::translate("MinesFieldSettingsDialog", "choose", 0));
-        label_6->setText(QApplication::translate("MinesFieldSettingsDialog", "border color", 0));
+        label_6->setText(QApplication::translate("MinesFieldSettingsDialog", "border", 0));
         borderColorButton->setText(QApplication::translate("MinesFieldSettingsDialog", "choose", 0));
-        label_7->setText(QApplication::translate("MinesFieldSettingsDialog", "mines around color", 0));
+        label_7->setText(QApplication::translate("MinesFieldSettingsDialog", "1 mine around", 0));
         minesAroundColorButton->setText(QApplication::translate("MinesFieldSettingsDialog", "choose", 0));
+        showZoom->setText(QApplication::translate("MinesFieldSettingsDialog", "show zoom", 0));
+        showHints->setText(QApplication::translate("MinesFieldSettingsDialog", "show hints", 0));
     } // retranslateUi
 
 };

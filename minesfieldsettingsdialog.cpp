@@ -17,6 +17,8 @@ MinesFieldSettingsDialog::MinesFieldSettingsDialog(MinesFieldWidget* minesFieldW
     ui->markedAsQuestionColorButton->setColor(settings.markedAsQuestionColor);
     ui->borderColorButton->setColor(settings.borderColor);
     ui->minesAroundColorButton->setColor(settings.minesAroundColor);
+    ui->showZoom->setChecked(settings.isZoomEnabled);
+    ui->showHints->setChecked(settings.isHintsEnabled);
     connect(this, SIGNAL(accepted()), this, SLOT(updateSettings()));
 
     connect(ui->backgroundColorButton, SIGNAL(clicked(bool)), this, SLOT(updateSettings()));
@@ -26,6 +28,8 @@ MinesFieldSettingsDialog::MinesFieldSettingsDialog(MinesFieldWidget* minesFieldW
     connect(ui->markedAsQuestionColorButton, SIGNAL(clicked(bool)), this, SLOT(updateSettings()));
     connect(ui->borderColorButton, SIGNAL(clicked(bool)), this, SLOT(updateSettings()));
     connect(ui->minesAroundColorButton, SIGNAL(clicked(bool)), this, SLOT(updateSettings()));
+    connect(ui->showZoom, SIGNAL(clicked(bool)), this, SLOT(updateSettings()));
+    connect(ui->showHints, SIGNAL(clicked(bool)), this, SLOT(updateSettings()));
 }
 
 MinesFieldSettingsDialog::~MinesFieldSettingsDialog()
@@ -47,5 +51,7 @@ void MinesFieldSettingsDialog::updateSettings()
     settings.markedAsQuestionColor = ui->markedAsQuestionColorButton->getColor();
     settings.borderColor = ui->borderColorButton->getColor();
     settings.minesAroundColor = ui->minesAroundColorButton->getColor();
+    settings.isZoomEnabled = ui->showZoom->isChecked();
+    settings.isHintsEnabled = ui->showHints->isChecked();
     minesFieldWidget->updatePixmap();
 }
