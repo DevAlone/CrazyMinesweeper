@@ -1,6 +1,6 @@
 ## CrazyMinesweeper
 
-It's good game
+It's a good game
 
 ### test
 
