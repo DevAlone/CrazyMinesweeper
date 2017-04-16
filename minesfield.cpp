@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <algorithm>
+#include <ctime>
 #include <queue>
 #include <set>
 
@@ -11,16 +12,17 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
 {
     if (minesPercents > 100)
         minesPercents = 100;
+
     minesPercents = double(mp) / 100.0;
 
     cells = std::vector<Cell>(rows * cols);
     minesLeft = minesCount = rows * cols * minesPercents;
     // TODO: use better pseudo random generator
+    srand(time(0));
     // генерим мины в первых minesCount элементах массива
     for (unsigned i = 0; i < minesCount; i++) {
         cells.at(i).setMine();
     }
-
     // пермешиваем
     std::random_shuffle(cells.begin(), cells.end());
 
