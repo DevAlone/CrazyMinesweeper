@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
 
     minesFieldWidget = ui->minesFieldScrollableWidget->getMinesFieldWidget();
-    //    minesField = std::shared_ptr<MinesField>(new MinesField(20, 20, 20));
-    //    minesFieldWidget->setField(minesField);
+    minesField = std::shared_ptr<MinesField>(new MinesField(20, 20, 20));
+    minesFieldWidget->setField(minesField);
     minesFieldWidget->setCellSize(QSize(25, 25));
     minesFieldWidget->setBorderSize(QSize(0, 0));
 
