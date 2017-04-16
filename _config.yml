@@ -1,3 +1,4 @@
 theme: jekyll-theme-tactile
 title: minesweeper
 description: This game like original minesweeper, but with color instead of numbers to show mines around cell
+show_downloads: true
