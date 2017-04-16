@@ -1,7 +1,3 @@
 ## CrazyMinesweeper
 
-It's a good game
-
-### test
-
-
+You can download it here: https://github.com/DevAlone/CrazyMinesweeper/releases/tag/1
