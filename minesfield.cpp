@@ -15,7 +15,7 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
 
     cells = std::vector<Cell>(rows * cols);
     minesLeft = minesCount = rows * cols * minesPercents;
-
+    // TODO: use better pseudo random generator
     // генерим мины в первых minesCount элементах массива
     for (unsigned i = 0; i < minesCount; i++) {
         cells.at(i).setMine();
