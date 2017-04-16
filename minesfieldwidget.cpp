@@ -7,7 +7,7 @@ MinesFieldWidget::MinesFieldWidget(QWidget* parent)
     settings.backgroundColor = Qt::gray;
     settings.closedCellColor = Qt::white;
 
-    connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
+    //    connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
     // TODO: fix it
     cellSize = QSize(1, 1);
     borderSize = QSize(0, 0);
@@ -80,6 +80,8 @@ void MinesFieldWidget::showEvent(QShowEvent* event)
 
 void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
 {
+    if (!field)
+        return;
     auto pos = event->pos();
     Point cellPoint;
     cellPoint.setX(double(pos.x()) / (cellSize.width() + borderSize.width()));
@@ -113,6 +115,8 @@ void MinesFieldWidget::mousePressEvent(QMouseEvent* event)
 
 void MinesFieldWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+    if (!field)
+        return;
     if (event->button() == Qt::LeftButton) {
         auto pos = event->pos();
         Point cell(double(pos.x()) / (cellSize.width() + borderSize.width()),
@@ -134,11 +138,11 @@ void MinesFieldWidget::mouseMoveEvent(QMouseEvent* event)
     update();
 }
 
-void MinesFieldWidget::keyPressEvent(QKeyEvent* event)
+void MinesFieldWidget::keyPressEvent(QKeyEvent*)
 {
 }
 
-MinesFieldWidgetSettings MinesFieldWidget::getSettings() const
+MinesFieldWidgetSettings& MinesFieldWidget::getSettings()
 {
     return settings;
 }
@@ -225,6 +229,8 @@ Point MinesFieldWidget::convertCellPointToAbsolute(const Point& point)
 
 void MinesFieldWidget::updatePixmap()
 {
+    if (!field)
+        return;
     // TODO: do it
     int width = visibleRegion().boundingRect().width();
     int height = visibleRegion().boundingRect().height();
@@ -238,7 +244,7 @@ void MinesFieldWidget::updatePixmap()
     viewport.rows = height / (cellSize.height() + borderSize.height()) + 1;
     pixmap = QPixmap(viewport.width, viewport.height);
 
-    pixmap.fill(Qt::gray);
+    pixmap.fill(settings.backgroundColor);
     QPainter painter(&pixmap);
     // to do: optimize this
     int stepX = cellSize.width() + borderSize.width();
@@ -246,14 +252,14 @@ void MinesFieldWidget::updatePixmap()
 
     // horizontal lines
     if (borderSize.height() > 0) {
-        painter.setPen(QPen(Qt::black, borderSize.height()));
+        painter.setPen(QPen(settings.borderColor, borderSize.height()));
         for (unsigned y = borderSize.height() / 2; y <= viewport.height; y += stepY)
             painter.drawLine(0, y, viewport.width, y);
     }
 
     // vertical lines
     if (borderSize.width() > 0) {
-        painter.setPen(QPen(Qt::black, borderSize.width()));
+        painter.setPen(QPen(settings.borderColor, borderSize.width()));
         for (unsigned x = borderSize.width() / 2; x <= viewport.width; x += stepX)
             painter.drawLine(x, 0, x, viewport.height);
     }
@@ -272,18 +278,20 @@ void MinesFieldWidget::updatePixmap()
             const Cell& cell = cells.at(i);
 
             int minesAroundCell = cell.minesAround();
-            QColor color;
+            QColor color = settings.backgroundColor;
             switch (cell.cellState()) {
             case Cell::CellState::Closed:
                 color = settings.closedCellColor;
                 break;
             case Cell::CellState::Opened:
                 if (minesAroundCell == 0)
-                    color = settings.backgroundColor;
-                else
-                    // TODO: make smart algorithm
-                    color = QColor(0, 100.0 + 155.0 * (8 - minesAroundCell) / 8.0, 0);
-
+                    color = settings.openedCellColor;
+                else {
+                    // color = settings.minesAroundColor; // QColor(0, 100.0 + 155.0 * (8 - minesAroundCell) / 8.0, 0);
+                    color = QColor((9 - minesAroundCell) / 8.0 * settings.minesAroundColor.red(),
+                        (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.green(),
+                        (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.blue());
+                }
                 break;
             case Cell::CellState::MarkedAsBomb:
                 color = settings.markedAsBombColor;

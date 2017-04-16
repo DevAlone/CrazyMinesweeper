@@ -67,7 +67,7 @@ void NewGameDialog::updateData()
 void NewGameDialog::on_pushButtonEasy_clicked()
 {
     data.fieldSize = QSize(25, 25);
-    data.cellSize = QSize(30, 30);
+    data.cellSize = QSize(25, 25);
     data.borderSize = QSize(0, 0);
     data.minesPercent = 20;
 

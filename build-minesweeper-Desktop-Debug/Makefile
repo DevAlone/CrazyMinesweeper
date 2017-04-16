@@ -56,11 +56,15 @@ SOURCES       = ../main.cpp \
 		../cell.cpp \
 		../mainwindow.cpp \
 		../minesfieldscrollablewidget.cpp \
-		../newgamedialog.cpp moc_minesfield.cpp \
+		../newgamedialog.cpp \
+		../minesfieldsettingsdialog.cpp \
+		../colorchoosebutton.cpp moc_minesfield.cpp \
 		moc_minesfieldwidget.cpp \
 		moc_mainwindow.cpp \
 		moc_minesfieldscrollablewidget.cpp \
-		moc_newgamedialog.cpp
+		moc_newgamedialog.cpp \
+		moc_minesfieldsettingsdialog.cpp \
+		moc_colorchoosebutton.cpp
 OBJECTS       = main.o \
 		minesfield.o \
 		minesfieldwidget.o \
@@ -70,11 +74,15 @@ OBJECTS       = main.o \
 		mainwindow.o \
 		minesfieldscrollablewidget.o \
 		newgamedialog.o \
+		minesfieldsettingsdialog.o \
+		colorchoosebutton.o \
 		moc_minesfield.o \
 		moc_minesfieldwidget.o \
 		moc_mainwindow.o \
 		moc_minesfieldscrollablewidget.o \
-		moc_newgamedialog.o
+		moc_newgamedialog.o \
+		moc_minesfieldsettingsdialog.o \
+		moc_colorchoosebutton.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -141,7 +149,9 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../cell.h \
 		../mainwindow.h \
 		../minesfieldscrollablewidget.h \
-		../newgamedialog.h ../main.cpp \
+		../newgamedialog.h \
+		../minesfieldsettingsdialog.h \
+		../colorchoosebutton.h ../main.cpp \
 		../minesfield.cpp \
 		../minesfieldwidget.cpp \
 		../point.cpp \
@@ -149,7 +159,9 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../cell.cpp \
 		../mainwindow.cpp \
 		../minesfieldscrollablewidget.cpp \
-		../newgamedialog.cpp
+		../newgamedialog.cpp \
+		../minesfieldsettingsdialog.cpp \
+		../colorchoosebutton.cpp
 QMAKE_TARGET  = minesweeper
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = minesweeper
@@ -177,7 +189,7 @@ first: all
 
 ####### Build rules
 
-$(TARGET): ui_mainwindow.h ui_newgamedialog.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_newgamedialog.h ui_minesfieldsettingsdialog.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../minesweeper.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -321,9 +333,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../minesfield.h ../minesfieldwidget.h ../point.h ../minesfieldwidgetsettings.h ../cell.h ../mainwindow.h ../minesfieldscrollablewidget.h ../newgamedialog.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../main.cpp ../minesfield.cpp ../minesfieldwidget.cpp ../point.cpp ../minesfieldwidgetsettings.cpp ../cell.cpp ../mainwindow.cpp ../minesfieldscrollablewidget.cpp ../newgamedialog.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../mainwindow.ui ../newgamedialog.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../minesfield.h ../minesfieldwidget.h ../point.h ../minesfieldwidgetsettings.h ../cell.h ../mainwindow.h ../minesfieldscrollablewidget.h ../newgamedialog.h ../minesfieldsettingsdialog.h ../colorchoosebutton.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../main.cpp ../minesfield.cpp ../minesfieldwidget.cpp ../point.cpp ../minesfieldwidgetsettings.cpp ../cell.cpp ../mainwindow.cpp ../minesfieldscrollablewidget.cpp ../newgamedialog.cpp ../minesfieldsettingsdialog.cpp ../colorchoosebutton.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../mainwindow.ui ../newgamedialog.ui ../minesfieldsettingsdialog.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -346,9 +358,9 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp moc_newgamedialog.cpp
+compiler_moc_header_make_all: moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp moc_newgamedialog.cpp moc_minesfieldsettingsdialog.cpp moc_colorchoosebutton.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp moc_newgamedialog.cpp
+	-$(DEL_FILE) moc_minesfield.cpp moc_minesfieldwidget.cpp moc_mainwindow.cpp moc_minesfieldscrollablewidget.cpp moc_newgamedialog.cpp moc_minesfieldsettingsdialog.cpp moc_colorchoosebutton.cpp
 moc_minesfield.cpp: ../cell.h \
 		../point.h \
 		../minesfield.h
@@ -380,17 +392,26 @@ moc_minesfieldscrollablewidget.cpp: ../minesfieldwidget.h \
 moc_newgamedialog.cpp: ../newgamedialog.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../newgamedialog.h -o moc_newgamedialog.cpp
 
+moc_minesfieldsettingsdialog.cpp: ../minesfieldsettingsdialog.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../minesfieldsettingsdialog.h -o moc_minesfieldsettingsdialog.cpp
+
+moc_colorchoosebutton.cpp: ../colorchoosebutton.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/user/qt-creator-projects/minesweeper -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../colorchoosebutton.h -o moc_colorchoosebutton.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h ui_newgamedialog.h
+compiler_uic_make_all: ui_mainwindow.h ui_newgamedialog.h ui_minesfieldsettingsdialog.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h ui_newgamedialog.h
+	-$(DEL_FILE) ui_mainwindow.h ui_newgamedialog.h ui_minesfieldsettingsdialog.h
 ui_mainwindow.h: ../mainwindow.ui \
 		../minesfieldscrollablewidget.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../mainwindow.ui -o ui_mainwindow.h
 
 ui_newgamedialog.h: ../newgamedialog.ui
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../newgamedialog.ui -o ui_newgamedialog.h
+
+ui_minesfieldsettingsdialog.h: ../minesfieldsettingsdialog.ui
+	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../minesfieldsettingsdialog.ui -o ui_minesfieldsettingsdialog.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -438,7 +459,8 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../point.h \
 		../minesfieldwidgetsettings.h \
 		../newgamedialog.h \
-		ui_mainwindow.h
+		ui_mainwindow.h \
+		../minesfieldscrollablewidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
 minesfieldscrollablewidget.o: ../minesfieldscrollablewidget.cpp ../minesfieldscrollablewidget.h \
@@ -452,6 +474,13 @@ minesfieldscrollablewidget.o: ../minesfieldscrollablewidget.cpp ../minesfieldscr
 newgamedialog.o: ../newgamedialog.cpp ../newgamedialog.h \
 		ui_newgamedialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o newgamedialog.o ../newgamedialog.cpp
+
+minesfieldsettingsdialog.o: ../minesfieldsettingsdialog.cpp ../minesfieldsettingsdialog.h \
+		ui_minesfieldsettingsdialog.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o minesfieldsettingsdialog.o ../minesfieldsettingsdialog.cpp
+
+colorchoosebutton.o: ../colorchoosebutton.cpp ../colorchoosebutton.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o colorchoosebutton.o ../colorchoosebutton.cpp
 
 moc_minesfield.o: moc_minesfield.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_minesfield.o moc_minesfield.cpp
@@ -467,6 +496,12 @@ moc_minesfieldscrollablewidget.o: moc_minesfieldscrollablewidget.cpp
 
 moc_newgamedialog.o: moc_newgamedialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_newgamedialog.o moc_newgamedialog.cpp
+
+moc_minesfieldsettingsdialog.o: moc_minesfieldsettingsdialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_minesfieldsettingsdialog.o moc_minesfieldsettingsdialog.cpp
+
+moc_colorchoosebutton.o: moc_colorchoosebutton.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_colorchoosebutton.o moc_colorchoosebutton.cpp
 
 ####### Install
 

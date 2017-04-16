@@ -28,7 +28,7 @@ public:
     QSize getBorderSize() const;
     void setBorderSize(const QSize& value);
 
-    MinesFieldWidgetSettings getSettings() const;
+    MinesFieldWidgetSettings& getSettings();
     void setSettings(const MinesFieldWidgetSettings& value);
 
 signals:
@@ -51,6 +51,7 @@ protected:
 private:
     std::shared_ptr<MinesField> field;
     MinesFieldWidgetSettings settings;
+
     void highlightCell(Point cellPoint, QColor color = Qt::gray);
     void unhighlightCell(Point cellPoint);
 

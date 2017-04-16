@@ -33,12 +33,12 @@ public:
     Cell* getCell(unsigned index);
     bool isCellIndexValid(long index) const
     {
-        return index >= 0 && index < cells.size();
+        return index >= 0 && index < long(cells.size());
     }
     bool isCellPointValid(const Point& point) const
     {
-        return point.x() >= 0 && point.x() < cols
-            && point.y() >= 0 && point.y() < rows;
+        return point.x() >= 0 && point.x() < long(cols)
+            && point.y() >= 0 && point.y() < long(rows);
     }
     inline std::vector<Point> getAroundCells(const Point& cell) const;
 
