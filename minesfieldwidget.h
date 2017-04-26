@@ -58,10 +58,10 @@ private:
     QPixmap pixmap;
 
     struct Viewport {
-        int x, y;
-        unsigned width, height;
-        unsigned start_col, start_row;
-        unsigned cols, rows;
+        long long x, y;
+        long width, height;
+        long start_col, start_row;
+        long cols, rows;
     };
 
     Viewport viewport;

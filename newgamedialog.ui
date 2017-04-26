@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>355</height>
+    <height>385</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -165,7 +165,7 @@
        <item>
         <widget class="QPushButton" name="pushButtonAsianMode">
          <property name="text">
-          <string>asian mode</string>
+          <string>crazy mode</string>
          </property>
         </widget>
        </item>

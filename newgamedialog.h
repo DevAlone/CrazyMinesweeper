@@ -18,7 +18,7 @@ class NewGameDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit NewGameDialog(QWidget* parent = 0);
+    explicit NewGameDialog(QWidget* parent = 0, QSize fieldSize = QSize(100, 100), QSize cellSize = QSize(20, 20), QSize borderSize = QSize(0, 0), unsigned char minesPercents = 20);
     ~NewGameDialog();
     NewGameDialogData getEnteredData() const;
 

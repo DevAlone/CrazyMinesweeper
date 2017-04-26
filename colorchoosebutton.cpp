@@ -8,7 +8,6 @@ ColorChooseButton::ColorChooseButton(QWidget* parent)
     : QPushButton(parent)
 {
     connect(this, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
-    qDebug() << "button maked";
 }
 
 void ColorChooseButton::buttonClicked()

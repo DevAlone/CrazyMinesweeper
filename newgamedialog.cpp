@@ -2,7 +2,7 @@
 #include "ui_newgamedialog.h"
 
 // TODO: make saving previous state
-NewGameDialog::NewGameDialog(QWidget* parent)
+NewGameDialog::NewGameDialog(QWidget* parent, QSize fieldSize, QSize cellSize, QSize borderSize, unsigned char minesPercents)
     : QDialog(parent)
     , ui(new Ui::NewGameDialog)
 {
@@ -19,16 +19,16 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 
     ui->stackedWidget->setCurrentIndex(1);
 
-    ui->fieldWidth->setText("10");
-    ui->fieldHeight->setText("10");
+    ui->fieldWidth->setText(QString::number(fieldSize.width()));
+    ui->fieldHeight->setText(QString::number(fieldSize.height()));
 
-    ui->cellWidth->setText("30");
-    ui->cellHeight->setText("30");
+    ui->cellWidth->setText(QString::number(cellSize.width()));
+    ui->cellHeight->setText(QString::number(cellSize.height()));
 
-    ui->borderWidth->setText("0");
-    ui->borderHeight->setText("0");
+    ui->borderWidth->setText(QString::number(borderSize.width()));
+    ui->borderHeight->setText(QString::number(borderSize.height()));
 
-    ui->minesPercent->setText("20");
+    ui->minesPercent->setText(QString::number(minesPercents));
 }
 
 NewGameDialog::~NewGameDialog()

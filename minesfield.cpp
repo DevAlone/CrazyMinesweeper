@@ -127,6 +127,7 @@ bool MinesField::isUserWon()
 {
     if (minesLeft != 0)
         return false;
+    // TODO: optimize this
     for (const auto& cell : cells) {
         if (cell.isMine()) {
             if (cell.cellState() != Cell::CellState::MarkedAsBomb)

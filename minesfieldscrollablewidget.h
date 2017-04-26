@@ -12,15 +12,21 @@ public:
 
     MinesFieldWidget* getMinesFieldWidget() const;
 
+    bool eventFilter(QObject* obj, QEvent* event);
+
 signals:
 
 public slots:
+    void horizontalScrollBarPositionChanged(int value);
+    void verticalScrollBarPositionChanged(int value);
 
 protected:
     void keyPressEvent(QKeyEvent* event);
 
 private:
-    MinesFieldWidget* minesFieldWidget;
+    MinesFieldWidget* minesFieldWidget = 0;
+    QScrollBar* verticalScrollBar = 0;
+    QScrollBar* horizontalScrollBar = 0;
 };
 
 #endif // MINESFIELDSCROLLABLEWIDGET_H

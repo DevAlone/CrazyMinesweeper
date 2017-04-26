@@ -57,7 +57,8 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
             centerRectHeight * (zoomArea.height() / 2),
             centerRectWidth,
             centerRectHeight);
-        p1.drawRect(0, 0, zoomedPixmap.width() - 1, zoomedPixmap.height() - 1);
+
+        //        p1.drawRect(0, 0, zoomedPixmap.width() - 1, zoomedPixmap.height() - 1);
         painter.drawPixmap(width() - zoomedPixmap.width(), 0, zoomedPixmap);
         startDrawingPosY += zoomedPixmap.height();
     }
@@ -82,7 +83,7 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
             p1.drawText(i * cellWidth, 1.75 * cellWidth, QString::number(minesAroundCell));
         }
         p1.setBrush(Qt::transparent);
-        p1.drawRect(0, 0, popupWidth - 1, 2 * cellWidth - 1);
+        //        p1.drawRect(0, 0, popupWidth - 1, 2 * cellWidth - 1);
         painter.drawPixmap(width() - popupWidth, startDrawingPosY, hintsPixmap);
     }
 
@@ -96,6 +97,10 @@ void MinesFieldWidget::resizeEvent(QResizeEvent*)
 
 void MinesFieldWidget::wheelEvent(QWheelEvent* event)
 {
+    if (event->modifiers())
+        horizontalScrollPosChanged(-event->delta() / 120);
+    else
+        verticalScrollPosChanged(-event->delta() / 120);
     return QWidget::wheelEvent(event);
 }
 
@@ -349,29 +354,31 @@ QSize MinesFieldWidget::sizeHint() const
 
 void MinesFieldWidget::verticalScrollPosChanged(int pos)
 {
-    if (pos < 0)
-        return;
-    viewport.start_row = pos;
-    viewport.y = pos * (cellSize.height() + borderSize.height());
-    updatePixmap();
+    scrollPosChanged(0, pos);
+    return;
 }
 
 void MinesFieldWidget::horizontalScrollPosChanged(int pos)
 {
-    if (pos < 0)
-        return;
-    viewport.start_col = pos;
-    viewport.x = pos * (cellSize.width() + borderSize.width());
-    updatePixmap();
+    scrollPosChanged(pos, 0);
+    return;
 }
 
 void MinesFieldWidget::scrollPosChanged(int horizontal_pos, int vertical_pos)
 {
-    if (horizontal_pos < 0 || vertical_pos < 0)
-        return;
-    viewport.start_col = horizontal_pos;
-    viewport.start_row = vertical_pos;
-    viewport.x = horizontal_pos * (cellSize.width() + borderSize.width());
-    viewport.y = vertical_pos * (cellSize.height() + borderSize.height());
+    viewport.start_col += horizontal_pos;
+    viewport.start_row += vertical_pos;
+    if (viewport.start_col < 0)
+        viewport.start_col = 0;
+    else if (viewport.start_col > field->getCols() - 1)
+        viewport.start_col = field->getCols() - 1;
+
+    if (viewport.start_row < 0)
+        viewport.start_row = 0;
+    else if (viewport.start_row > field->getRows() - 1)
+        viewport.start_row = field->getRows() - 1;
+
+    viewport.x = viewport.start_col * (cellSize.width() + borderSize.width());
+    viewport.y = viewport.start_row * (cellSize.height() + borderSize.height());
     updatePixmap();
 }

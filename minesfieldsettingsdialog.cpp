@@ -1,8 +1,6 @@
 #include "minesfieldsettingsdialog.h"
 
 #include <ui_minesfieldsettingsdialog.h>
-// TODO: add border color
-// TODO: add around cells colors
 MinesFieldSettingsDialog::MinesFieldSettingsDialog(MinesFieldWidget* minesFieldWidget, QWidget* parent)
     : minesFieldWidget(minesFieldWidget)
     , settings(minesFieldWidget->getSettings())

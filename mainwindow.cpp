@@ -51,10 +51,18 @@ void MainWindow::wonGame()
 
 void MainWindow::on_actionNew_game_triggered()
 {
-    NewGameDialog dialog;
+    std::unique_ptr<NewGameDialog> dialog;
+    if (minesField)
+        dialog = std::unique_ptr<NewGameDialog>(new NewGameDialog(0,
+            QSize(minesField->getRows(), minesField->getCols()),
+            minesFieldWidget->getCellSize(),
+            minesFieldWidget->getBorderSize(),
+            minesField->getMinesPercents() * 100.0));
+    else
+        dialog = std::unique_ptr<NewGameDialog>(new NewGameDialog);
 
-    if (dialog.exec() == QDialog::Accepted) {
-        auto data = dialog.getEnteredData();
+    if (dialog->exec() == QDialog::Accepted) {
+        auto data = dialog->getEnteredData();
 
         minesField = std::shared_ptr<MinesField>(
             new MinesField(data.fieldSize.width(), data.fieldSize.height(), data.minesPercent));
