@@ -53,7 +53,7 @@ body > * {
 	justify-content: center;
 	align-items: center;
 	align-content: stretch;
-	background-color: rgb(150, 150, 190, 0.6);
+	background-color: rgba(150, 150, 190, 0.6);
 }
 .header .floating_block .buttons {
 	width: 100%;
