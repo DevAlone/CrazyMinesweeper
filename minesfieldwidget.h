@@ -14,6 +14,7 @@ class MinesFieldWidget : public QWidget {
     Q_OBJECT
 public:
     explicit MinesFieldWidget(QWidget* parent = 0);
+    virtual ~MinesFieldWidget();
 
     void updatePixmap();
 
@@ -54,6 +55,7 @@ private:
 
     void highlightCell(Point cellPoint, QColor color = Qt::gray);
     void unhighlightCell(Point cellPoint);
+    QColor getCellColor(Cell::CellState cellState, int minesAroundCell);
 
     QPixmap pixmap;
 

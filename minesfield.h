@@ -5,12 +5,15 @@
 #include "point.h"
 
 #include <QObject>
+#include <atomic>
+#include <thread>
 #include <vector>
 
 class MinesField : public QObject {
     Q_OBJECT
 public:
     MinesField(unsigned rows, unsigned cols, unsigned char minesPercents);
+    virtual ~MinesField();
 
     void lazyOpenCells(const Point& point);
     void tryToOpenCell(const Point& point);
@@ -42,6 +45,8 @@ public:
     }
     inline std::vector<Point> getAroundCells(const Point& cell) const;
 
+    bool getCreated() const;
+
 signals:
     void userLost();
     void userWon();
@@ -61,6 +66,8 @@ private:
 
     bool isUserWon();
     void checkForWin();
+
+    std::atomic<bool> created;
 };
 
 #endif // MINESFIELD_H

@@ -10,15 +10,17 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
     : rows(rows)
     , cols(cols)
 {
+    created = false;
     if (minesPercents > 100)
         minesPercents = 100;
 
     minesPercents = double(mp) / 100.0;
-
-    cells = std::vector<Cell>(rows * cols);
     minesLeft = minesCount = rows * cols * minesPercents;
     // TODO: use better pseudo random generator
     srand(time(0));
+
+    qDebug() << "start creating field";
+    cells = std::vector<Cell>(this->rows * this->cols);
     // генерим мины в первых minesCount элементах массива
     for (unsigned i = 0; i < minesCount; i++) {
         cells.at(i).setMine();
@@ -27,32 +29,32 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
     std::random_shuffle(cells.begin(), cells.end());
 
     // расставляем количество мин
-    for (unsigned i = 0; i < rows * cols; i++) {
+    for (unsigned i = 0; i < this->rows * this->cols; i++) {
         if (!cells.at(i).isMine())
             continue;
 
-        unsigned y = i / cols;
-        unsigned x = i - y * cols;
+        unsigned y = i / this->cols;
+        unsigned x = i - y * this->cols;
         // левая и правая
         if (x > 0)
             cells.at(i - 1).setMinesAround(cells.at(i - 1).minesAround() + 1);
-        if (x < cols - 1)
+        if (x < this->cols - 1)
             cells.at(i + 1).setMinesAround(cells.at(i + 1).minesAround() + 1);
         // верхняя и нижняя ячейки
         if (y > 0)
-            cells.at(i - cols).setMinesAround(cells.at(i - cols).minesAround() + 1);
-        if (y < rows - 1)
-            cells.at(i + cols).setMinesAround(cells.at(i + cols).minesAround() + 1);
+            cells.at(i - this->cols).setMinesAround(cells.at(i - this->cols).minesAround() + 1);
+        if (y < this->rows - 1)
+            cells.at(i + this->cols).setMinesAround(cells.at(i + this->cols).minesAround() + 1);
         // диагональные
         if (x > 0 && y > 0)
-            cells.at(i - cols - 1).setMinesAround(cells.at(i - cols - 1).minesAround() + 1);
-        if (x < cols - 1 && y > 0)
-            cells.at(i - cols + 1).setMinesAround(cells.at(i - cols + 1).minesAround() + 1);
+            cells.at(i - this->cols - 1).setMinesAround(cells.at(i - this->cols - 1).minesAround() + 1);
+        if (x < this->cols - 1 && y > 0)
+            cells.at(i - this->cols + 1).setMinesAround(cells.at(i - this->cols + 1).minesAround() + 1);
 
-        if (x > 0 && y < rows - 1)
-            cells.at(i + cols - 1).setMinesAround(cells.at(i + cols - 1).minesAround() + 1);
-        if (x < cols - 1 && y < rows - 1)
-            cells.at(i + cols + 1).setMinesAround(cells.at(i + cols + 1).minesAround() + 1);
+        if (x > 0 && y < this->rows - 1)
+            cells.at(i + this->cols - 1).setMinesAround(cells.at(i + this->cols - 1).minesAround() + 1);
+        if (x < this->cols - 1 && y < this->rows - 1)
+            cells.at(i + this->cols + 1).setMinesAround(cells.at(i + this->cols + 1).minesAround() + 1);
     }
 
     bool first_cell_opened = false;
@@ -69,10 +71,20 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
             break;
         }
     }
+
+    created = true;
+    qDebug() << "finish creating field";
+}
+
+MinesField::~MinesField()
+{
 }
 
 void MinesField::lazyOpenCells(const Point& point)
 {
+    if (!created)
+        return;
+
     checkForWin();
 
     if (lost || won)
@@ -118,6 +130,9 @@ void MinesField::lazyOpenCells(const Point& point)
 
 void MinesField::loseGame()
 {
+    if (!created)
+        return;
+
     lost = true;
     won = false;
     emit userLost();
@@ -125,6 +140,9 @@ void MinesField::loseGame()
 
 bool MinesField::isUserWon()
 {
+    if (!created)
+        return false;
+
     if (minesLeft != 0)
         return false;
     // TODO: optimize this
@@ -140,14 +158,25 @@ bool MinesField::isUserWon()
 
 void MinesField::checkForWin()
 {
+    if (!created)
+        return;
+
     if (minesLeft == 0) {
         if (!won && (won = isUserWon()))
             emit userWon();
     }
 }
 
+bool MinesField::getCreated() const
+{
+    return created;
+}
+
 void MinesField::tryToOpenCell(const Point& point)
 {
+    if (!created)
+        return;
+
     checkForWin();
 
     if (lost || won)
@@ -198,6 +227,9 @@ void MinesField::tryToOpenCell(const Point& point)
 
 void MinesField::markCell(const Point& point, Cell::CellState markAs)
 {
+    if (!created)
+        return;
+
     checkForWin();
 
     if (lost || won)
@@ -232,6 +264,9 @@ void MinesField::markCell(const Point& point, Cell::CellState markAs)
 
 void MinesField::unmarkCell(const Point& point)
 {
+    if (!created)
+        return;
+
     checkForWin();
     if (lost || won)
         return;

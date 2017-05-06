@@ -8,7 +8,6 @@ MinesFieldWidget::MinesFieldWidget(QWidget* parent)
     settings.closedCellColor = Qt::white;
 
     //    connect(field.get(), SIGNAL(userLost()), this, SLOT(userLose()));
-    // TODO: fix it
     cellSize = QSize(1, 1);
     borderSize = QSize(0, 0);
     //    fieldSize = QSize(cols * (cellSize.width() + borderSize.width()),
@@ -31,19 +30,25 @@ MinesFieldWidget::MinesFieldWidget(QWidget* parent)
     setMouseTracking(true);
 }
 
+MinesFieldWidget::~MinesFieldWidget()
+{
+}
+
 void MinesFieldWidget::paintEvent(QPaintEvent* event)
 {
     QWidget::paintEvent(event);
     QPainter painter(this);
 
+    if (!field->getCreated()) {
+        painter.drawText(width() / 2, height() / 2, "creating field...");
+        return;
+    }
     painter.drawPixmap(0, 0, pixmap);
 
     int startDrawingPosY = 0;
     double popupWidth = width() * 0.25;
     if (settings.isZoomEnabled && mousePos.x() >= 0 && mousePos.x() < pixmap.width()
         && mousePos.y() >= 0 && mousePos.y() < pixmap.height()) {
-        // TODO: optimize this, maybe add checks for out of range
-        // TODO: fix zoom near borders
         auto zoomedPixmap = pixmap.copy(mousePos.x() >= zoomArea.width() / 2 ? mousePos.x() - zoomArea.width() / 2 : 0,
                                       mousePos.y() >= zoomArea.height() / 2 ? mousePos.y() - zoomArea.height() / 2 : 0,
                                       zoomArea.width(),
@@ -225,19 +230,51 @@ void MinesFieldWidget::highlightCell(Point cellPoint, QColor color)
 
 void MinesFieldWidget::unhighlightCell(Point cellPoint)
 {
-    // TODO: fix unhighlighting with other color
-    QColor color = Qt::white;
+    // TODO: fix unhighlighting with other color outside field
+    QColor color = settings.backgroundColor;
     Cell* cell;
     try {
         cell = field->getCell(cellPoint);
     } catch (std::out_of_range& ex) {
+        highlightCell(cellPoint, color);
         return;
     }
+    color = getCellColor(cell->cellState(), cell->minesAround());
 
-    if (cell->cellState() == Cell::CellState::Opened)
-        updatePixmap();
-    else
-        highlightCell(cellPoint, color);
+    highlightCell(cellPoint, color);
+    //    if (cell->cellState() == Cell::CellState::Opened)
+    //        updatePixmap();
+    //    else
+    //        highlightCell(cellPoint, color);
+}
+
+QColor MinesFieldWidget::getCellColor(Cell::CellState cellState, int minesAroundCell)
+{
+    QColor color = settings.backgroundColor;
+    switch (cellState) {
+    case Cell::CellState::Closed:
+        color = settings.closedCellColor;
+        break;
+    case Cell::CellState::Opened:
+        if (minesAroundCell == 0)
+            color = settings.openedCellColor;
+        else {
+            // color = settings.minesAroundColor; // QColor(0, 100.0 + 155.0 * (8 - minesAroundCell) / 8.0, 0);
+            color = QColor((9 - minesAroundCell) / 8.0 * settings.minesAroundColor.red(),
+                (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.green(),
+                (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.blue());
+        }
+        break;
+    case Cell::CellState::MarkedAsBomb:
+        color = settings.markedAsBombColor;
+        break;
+    case Cell::CellState::MarkedAsQuestion:
+        color = settings.markedAsQuestionColor;
+        break;
+    default:
+        break;
+    }
+    return color;
 }
 
 QSize MinesFieldWidget::getBorderSize() const
@@ -273,9 +310,11 @@ Point MinesFieldWidget::convertCellPointToAbsolute(const Point& point)
 
 void MinesFieldWidget::updatePixmap()
 {
-    if (!field)
+    // to do: optimize this shit
+
+    if (!field || !field->getCreated())
         return;
-    // TODO: do it
+
     int width = visibleRegion().boundingRect().width();
     int height = visibleRegion().boundingRect().height();
     //    int width = 100;
@@ -286,11 +325,11 @@ void MinesFieldWidget::updatePixmap()
     viewport.height = height;
     viewport.cols = width / (cellSize.width() + borderSize.width()) + 1;
     viewport.rows = height / (cellSize.height() + borderSize.height()) + 1;
+
     pixmap = QPixmap(viewport.width, viewport.height);
 
     pixmap.fill(settings.backgroundColor);
     QPainter painter(&pixmap);
-    // to do: optimize this
     int stepX = cellSize.width() + borderSize.width();
     int stepY = cellSize.height() + borderSize.height();
 
@@ -321,31 +360,8 @@ void MinesFieldWidget::updatePixmap()
             auto& cells = field->getCells();
             const Cell& cell = cells.at(i);
 
-            int minesAroundCell = cell.minesAround();
-            QColor color = settings.backgroundColor;
-            switch (cell.cellState()) {
-            case Cell::CellState::Closed:
-                color = settings.closedCellColor;
-                break;
-            case Cell::CellState::Opened:
-                if (minesAroundCell == 0)
-                    color = settings.openedCellColor;
-                else {
-                    // color = settings.minesAroundColor; // QColor(0, 100.0 + 155.0 * (8 - minesAroundCell) / 8.0, 0);
-                    color = QColor((9 - minesAroundCell) / 8.0 * settings.minesAroundColor.red(),
-                        (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.green(),
-                        (9 - minesAroundCell) / 8.0 * settings.minesAroundColor.blue());
-                }
-                break;
-            case Cell::CellState::MarkedAsBomb:
-                color = settings.markedAsBombColor;
-                break;
-            case Cell::CellState::MarkedAsQuestion:
-                color = settings.markedAsQuestionColor;
-                break;
-            default:
-                break;
-            }
+            int minesAroundCell = cell.minesAround(); // TODO: ?
+            QColor color = getCellColor(cell.cellState(), minesAroundCell);
 
             painter.fillRect((x - viewport.start_col) * stepX + borderSize.width(),
                 (y - viewport.start_row) * stepY + borderSize.height(),
