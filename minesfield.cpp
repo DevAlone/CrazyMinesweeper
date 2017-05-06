@@ -303,8 +303,8 @@ Cell* MinesField::getCell(unsigned index)
 
 std::vector<Point> MinesField::getAroundCells(const Point& cell) const
 {
-    int x = cell.x();
-    int y = cell.y();
+    unsigned x = cell.x();
+    unsigned y = cell.y();
 
     std::vector<Point> result;
     result.reserve(8);

@@ -44,8 +44,8 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
         && mousePos.y() >= 0 && mousePos.y() < pixmap.height()) {
         // TODO: optimize this, maybe add checks for out of range
         // TODO: fix zoom near borders
-        auto zoomedPixmap = pixmap.copy(mousePos.x() - zoomArea.width() / 2,
-                                      mousePos.y() - zoomArea.height() / 2,
+        auto zoomedPixmap = pixmap.copy(mousePos.x() >= zoomArea.width() / 2 ? mousePos.x() - zoomArea.width() / 2 : 0,
+                                      mousePos.y() >= zoomArea.height() / 2 ? mousePos.y() - zoomArea.height() / 2 : 0,
                                       zoomArea.width(),
                                       zoomArea.height())
                                 .scaled(popupWidth, popupWidth);
@@ -53,8 +53,20 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
         int centerRectHeight = zoomedPixmap.height() / zoomArea.height();
 
         QPainter p1(&zoomedPixmap);
-        p1.drawRect(centerRectWidth * (zoomArea.width() / 2),
-            centerRectHeight * (zoomArea.height() / 2),
+        // draw center rectangle
+        QPoint centerRectPos;
+        if (mousePos.x() >= zoomArea.width() / 2)
+            centerRectPos.setX(zoomArea.width() / 2);
+        else
+            centerRectPos.setX(mousePos.x());
+
+        if (mousePos.y() >= zoomArea.height() / 2)
+            centerRectPos.setY(zoomArea.height() / 2);
+        else
+            centerRectPos.setY(mousePos.y());
+
+        p1.drawRect(centerRectWidth * centerRectPos.x(),
+            centerRectHeight * centerRectPos.y(),
             centerRectWidth,
             centerRectHeight);
 
