@@ -31,27 +31,6 @@ MinesFieldScrollableWidget::MinesFieldScrollableWidget(QWidget* parent)
     setLayout(layout);
 }
 
-void MinesFieldScrollableWidget::keyPressEvent(QKeyEvent* event)
-{
-    // TODO: make it working
-    // TODO: fix multiple events!
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        QPoint cursorPos = cursor().pos();
-
-        if (keyEvent->key() == Qt::Key_A)
-            cursorPos.setX(cursorPos.x() - 1);
-        else if (keyEvent->key() == Qt::Key_D)
-            cursorPos.setX(cursorPos.x() + 1);
-        else if (keyEvent->key() == Qt::Key_W)
-            cursorPos.setY(cursorPos.y() - 1);
-        else if (keyEvent->key() == Qt::Key_S)
-            cursorPos.setY(cursorPos.y() + 1);
-
-        cursor().setPos(cursorPos);
-    }
-}
-
 MinesFieldWidget* MinesFieldScrollableWidget::getMinesFieldWidget() const
 {
     return minesFieldWidget;

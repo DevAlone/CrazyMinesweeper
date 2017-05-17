@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include <ctime>
 
+// add showing mines left
 int main(int argc, char* argv[])
 {
     srand(time(0));

@@ -25,8 +25,58 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::keyPressEvent(QKeyEvent*)
+void MainWindow::keyPressEvent(QKeyEvent* event)
 {
+    // TODO: add checks for out of field and scroll
+    // TODO: change step from 1 pixel size to size of 1 cell
+    // TODO: faster moving
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        QPoint cursorPos = cursor().pos();
+
+        auto cell = minesFieldWidget->getCellByMousePoint(minesFieldWidget->mapFromGlobal(cursorPos));
+        qDebug() << cursorPos << "?" << cell.x() << ":" << cell.y();
+
+        auto stepSize = minesFieldWidget->getCellSize() + minesFieldWidget->getBorderSize();
+        QPoint cellPos = QPoint(cell.x() * stepSize.width() + stepSize.width() / 2,
+            cell.y() * stepSize.height() + stepSize.height() / 2);
+
+        cursorPos = minesFieldWidget->mapToGlobal(cellPos);
+
+        auto key = keyEvent->key();
+        switch (key) {
+        case Qt::Key_A:
+            cursorPos.setX(cursorPos.x() - stepSize.width());
+            break;
+        case Qt::Key_D:
+            cursorPos.setX(cursorPos.x() + stepSize.width());
+            break;
+        case Qt::Key_W:
+            cursorPos.setY(cursorPos.y() - stepSize.height());
+            break;
+        case Qt::Key_S:
+            cursorPos.setY(cursorPos.y() + stepSize.height());
+            break;
+        case Qt::Key_Q:
+        case Qt::Key_E:
+        case Qt::Key_Tab: {
+            auto cursorPos = minesFieldWidget->mapFromGlobal(QCursor::pos());
+            // determining button
+            auto button = key == Qt::Key_Q ? Qt::LeftButton
+                                           : key == Qt::Key_E ? Qt::RightButton
+                                                              : Qt::MiddleButton;
+            QMouseEvent pressEvent(QEvent::MouseButtonPress, cursorPos, button, button, Qt::NoModifier);
+            QMouseEvent releaseEvent(QEvent::MouseButtonRelease, cursorPos, button, button, Qt::NoModifier);
+            QCoreApplication::sendEvent(minesFieldWidget, &pressEvent);
+            QCoreApplication::sendEvent(minesFieldWidget, &releaseEvent);
+        } break;
+        default:
+            break;
+        }
+
+        cursor().setPos(cursorPos);
+    }
+    QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::loseGame()

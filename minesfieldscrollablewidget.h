@@ -21,8 +21,6 @@ public slots:
     void verticalScrollBarPositionChanged(int value);
 
 protected:
-    void keyPressEvent(QKeyEvent* event);
-
 private:
     MinesFieldWidget* minesFieldWidget = 0;
     QScrollBar* verticalScrollBar = 0;

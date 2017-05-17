@@ -187,10 +187,6 @@ void MinesFieldWidget::mouseMoveEvent(QMouseEvent* event)
     update();
 }
 
-void MinesFieldWidget::keyPressEvent(QKeyEvent*)
-{
-}
-
 MinesFieldWidgetSettings& MinesFieldWidget::getSettings()
 {
     return settings;

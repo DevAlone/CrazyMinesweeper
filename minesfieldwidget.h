@@ -32,6 +32,8 @@ public:
     MinesFieldWidgetSettings& getSettings();
     void setSettings(const MinesFieldWidgetSettings& value);
 
+    Point getCellByMousePoint(const QPoint& mousePoint);
+    Point convertCellPointToAbsolute(const Point& point);
 signals:
 
 public slots:
@@ -47,7 +49,6 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
-    void keyPressEvent(QKeyEvent* event);
 
 private:
     std::shared_ptr<MinesField> field;
@@ -75,9 +76,6 @@ private:
     Point selectedCell;
     QPoint mousePos;
     QSize zoomArea = QSize(7, 7);
-
-    Point getCellByMousePoint(const QPoint& mousePoint);
-    Point convertCellPointToAbsolute(const Point& point);
 };
 
 #endif // MINESFIELDWIDGET_H

@@ -16,7 +16,6 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
 
     minesPercents = double(mp) / 100.0;
     minesLeft = minesCount = rows * cols * minesPercents;
-    // TODO: use better pseudo random generator
     srand(time(0));
 
     qDebug() << "start creating field";

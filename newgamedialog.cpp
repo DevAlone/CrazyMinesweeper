@@ -1,7 +1,6 @@
 #include "newgamedialog.h"
 #include "ui_newgamedialog.h"
 
-// TODO: make saving previous state
 NewGameDialog::NewGameDialog(QWidget* parent, QSize fieldSize, QSize cellSize, QSize borderSize, unsigned char minesPercents)
     : QDialog(parent)
     , ui(new Ui::NewGameDialog)
