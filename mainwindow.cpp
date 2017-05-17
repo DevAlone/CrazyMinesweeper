@@ -27,10 +27,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
-    // TODO: add checks for out of field and scroll
-    // TODO: change step from 1 pixel size to size of 1 cell
-    // TODO: faster moving
-    if (event->type() == QEvent::KeyPress) {
+
+    QMainWindow::keyPressEvent(event);
+}
+
+bool MainWindow::event(QEvent* event)
+{
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
+        // TODO: add checks for out of field and scroll
+        // TODO: change step from 1 pixel size to size of 1 cell
+        // TODO: faster moving
+
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         QPoint cursorPos = cursor().pos();
 
@@ -44,39 +51,41 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
         cursorPos = minesFieldWidget->mapToGlobal(cellPos);
 
         auto key = keyEvent->key();
-        switch (key) {
-        case Qt::Key_A:
-            cursorPos.setX(cursorPos.x() - stepSize.width());
-            break;
-        case Qt::Key_D:
-            cursorPos.setX(cursorPos.x() + stepSize.width());
-            break;
-        case Qt::Key_W:
-            cursorPos.setY(cursorPos.y() - stepSize.height());
-            break;
-        case Qt::Key_S:
-            cursorPos.setY(cursorPos.y() + stepSize.height());
-            break;
-        case Qt::Key_Q:
-        case Qt::Key_E:
-        case Qt::Key_Tab: {
+
+        if (event->type() == QEvent::KeyPress) {
+            if (key == Qt::Key_A)
+                cursorPos.setX(cursorPos.x() - stepSize.width());
+            else if (key == Qt::Key_D)
+                cursorPos.setX(cursorPos.x() + stepSize.width());
+            else if (key == Qt::Key_W)
+                cursorPos.setY(cursorPos.y() - stepSize.height());
+
+            else if (key == Qt::Key_S)
+                cursorPos.setY(cursorPos.y() + stepSize.height());
+        }
+
+        if (key == Qt::Key_Q || key == Qt::Key_E || key == Qt::Key_Tab) {
             auto cursorPos = minesFieldWidget->mapFromGlobal(QCursor::pos());
             // determining button
             auto button = key == Qt::Key_Q ? Qt::LeftButton
                                            : key == Qt::Key_E ? Qt::RightButton
                                                               : Qt::MiddleButton;
-            QMouseEvent pressEvent(QEvent::MouseButtonPress, cursorPos, button, button, Qt::NoModifier);
-            QMouseEvent releaseEvent(QEvent::MouseButtonRelease, cursorPos, button, button, Qt::NoModifier);
-            QCoreApplication::sendEvent(minesFieldWidget, &pressEvent);
-            QCoreApplication::sendEvent(minesFieldWidget, &releaseEvent);
-        } break;
-        default:
-            break;
+
+            QMouseEvent clickEvent(
+                event->type() == QEvent::KeyPress ? QEvent::MouseButtonPress : QEvent::MouseButtonRelease,
+                cursorPos,
+                button,
+                button,
+                Qt::NoModifier);
+            QCoreApplication::sendEvent(minesFieldWidget, &clickEvent);
         }
 
         cursor().setPos(cursorPos);
+
+        return true;
     }
-    QMainWindow::keyPressEvent(event);
+
+    return QMainWindow::event(event);
 }
 
 void MainWindow::loseGame()

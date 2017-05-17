@@ -18,7 +18,8 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent* event);
-    //    bool event(QEvent* event);
+
+    bool event(QEvent* event);
 public slots:
     void loseGame();
     void wonGame();
