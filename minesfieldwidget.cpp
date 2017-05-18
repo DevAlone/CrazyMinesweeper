@@ -1,4 +1,5 @@
 #include "minesfieldwidget.h"
+#include "minesfieldwidgetupdaterthread.h"
 #include <QDebug>
 
 MinesFieldWidget::MinesFieldWidget(QWidget* parent)
@@ -43,6 +44,10 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
         painter.drawText(width() / 2, height() / 2, "creating field...");
         return;
     }
+
+    if (!updatingMutex.tryLock())
+        return;
+
     painter.drawPixmap(0, 0, pixmap);
 
     int startDrawingPosY = 0;
@@ -105,6 +110,8 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
     }
 
     event->accept();
+    // TODO: сделать что-то с возможностью появления эксепшена выше
+    updatingMutex.unlock();
 }
 
 void MinesFieldWidget::resizeEvent(QResizeEvent*)
@@ -185,6 +192,16 @@ void MinesFieldWidget::mouseMoveEvent(QMouseEvent* event)
 {
     mousePos = event->pos();
     update();
+}
+
+void MinesFieldWidget::updatingThreadFinished()
+{
+    qDebug() << "updating thread finished";
+    update();
+    if (isUpdatingQueued) {
+        isUpdatingQueued = false;
+        thread->start(QThread::HighestPriority); //TODO: do
+    }
 }
 
 MinesFieldWidgetSettings& MinesFieldWidget::getSettings()
@@ -322,52 +339,16 @@ void MinesFieldWidget::updatePixmap()
     viewport.cols = width / (cellSize.width() + borderSize.width()) + 1;
     viewport.rows = height / (cellSize.height() + borderSize.height()) + 1;
 
-    pixmap = QPixmap(viewport.width, viewport.height);
-
-    pixmap.fill(settings.backgroundColor);
-    QPainter painter(&pixmap);
-    int stepX = cellSize.width() + borderSize.width();
-    int stepY = cellSize.height() + borderSize.height();
-
-    // horizontal lines
-    if (borderSize.height() > 0) {
-        painter.setPen(QPen(settings.borderColor, borderSize.height()));
-        for (unsigned y = borderSize.height() / 2; y <= viewport.height; y += stepY)
-            painter.drawLine(0, y, viewport.width, y);
+    if (!thread) {
+        thread = new MinesFieldWidgetUpdaterThread(this);
+        connect(thread, SIGNAL(finished()),
+            this, SLOT(updatingThreadFinished()));
     }
-
-    // vertical lines
-    if (borderSize.width() > 0) {
-        painter.setPen(QPen(settings.borderColor, borderSize.width()));
-        for (unsigned x = borderSize.width() / 2; x <= viewport.width; x += stepX)
-            painter.drawLine(x, 0, x, viewport.height);
-    }
-
-    for (unsigned y = viewport.start_row;
-         y < viewport.start_row + viewport.rows && y < field->getRows();
-         y++) {
-        for (unsigned x = viewport.start_col;
-             x < viewport.start_col + viewport.cols && x < field->getCols();
-             x++) {
-            unsigned i = field->getCellIndex(Point(x, y));
-            if (!field->isCellIndexValid(i))
-                continue;
-
-            auto& cells = field->getCells();
-            const Cell& cell = cells.at(i);
-
-            int minesAroundCell = cell.minesAround(); // TODO: ?
-            QColor color = getCellColor(cell.cellState(), minesAroundCell);
-
-            painter.fillRect((x - viewport.start_col) * stepX + borderSize.width(),
-                (y - viewport.start_row) * stepY + borderSize.height(),
-                cellSize.width(),
-                cellSize.height(),
-                color);
-        }
-    }
-
-    update();
+    if (!thread->isRunning())
+        thread->start();
+    else
+        isUpdatingQueued = true;
+    //    update();
 }
 
 QSize MinesFieldWidget::sizeHint() const

@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     newgamedialog.cpp \
     minesfieldsettingsdialog.cpp \
     colorchoosebutton.cpp \
-    wongamedialog.cpp
+    wongamedialog.cpp \
+    minesfieldwidgetupdaterthread.cpp
 
 HEADERS  += \
     minesfield.h \
@@ -48,7 +49,8 @@ HEADERS  += \
     newgamedialog.h \
     minesfieldsettingsdialog.h \
     colorchoosebutton.h \
-    wongamedialog.h
+    wongamedialog.h \
+    minesfieldwidgetupdaterthread.h
 
 # FORMS    +=
 

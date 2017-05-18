@@ -3,6 +3,7 @@
 
 #include "minesfield.h"
 #include "minesfieldwidgetsettings.h"
+#include "minesfieldwidgetupdaterthread.h"
 #include "point.h"
 
 #include <memory>
@@ -10,9 +11,12 @@
 #include <QWidget>
 #include <QtWidgets>
 
+class MinesFieldWidgetUpdaterThread;
+
 class MinesFieldWidget : public QWidget {
     Q_OBJECT
 public:
+    friend class MinesFieldWidgetUpdaterThread;
     explicit MinesFieldWidget(QWidget* parent = 0);
     virtual ~MinesFieldWidget();
 
@@ -50,6 +54,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
 
+private slots:
+    void updatingThreadFinished();
+
 private:
     std::shared_ptr<MinesField> field;
     MinesFieldWidgetSettings settings;
@@ -76,6 +83,10 @@ private:
     Point selectedCell;
     QPoint mousePos;
     QSize zoomArea = QSize(7, 7);
+
+    MinesFieldWidgetUpdaterThread* thread = 0;
+    bool isUpdatingQueued;
+    QMutex updatingMutex;
 };
 
 #endif // MINESFIELDWIDGET_H
