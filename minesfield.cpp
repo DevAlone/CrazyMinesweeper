@@ -201,9 +201,9 @@ void MinesField::tryToOpenCell(const Point& point)
         return;
     } else {
         std::queue<unsigned> cellsQueue;
-        std::vector<unsigned> usedCells;
+        std::set<unsigned> usedCells;
         cellsQueue.push(cellIndex);
-        usedCells.push_back(cellIndex);
+        usedCells.insert(cellIndex);
 
         while (!cellsQueue.empty()) {
             cellIndex = cellsQueue.front();
@@ -216,9 +216,9 @@ void MinesField::tryToOpenCell(const Point& point)
 
                     for (auto cell : aroundCells) {
                         unsigned index = getCellIndex(cell);
-                        if (std::find(usedCells.begin(), usedCells.end(), index) == usedCells.end()) {
+                        if (usedCells.find(index) == usedCells.end()) {
                             cellsQueue.push(index);
-                            usedCells.push_back(index);
+                            usedCells.insert(index);
                         }
                     }
                 }
