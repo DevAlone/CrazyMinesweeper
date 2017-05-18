@@ -6,8 +6,8 @@ NewGameDialog::NewGameDialog(QWidget* parent, QSize fieldSize, QSize cellSize, Q
     , ui(new Ui::NewGameDialog)
 {
     ui->setupUi(this);
-    ui->fieldWidth->setValidator(new QIntValidator(1, 10000, this));
-    ui->fieldHeight->setValidator(new QIntValidator(1, 10000, this));
+    ui->fieldWidth->setValidator(new QIntValidator(1, 3000, this));
+    ui->fieldHeight->setValidator(new QIntValidator(1, 3000, this));
     ui->cellWidth->setValidator(new QIntValidator(1, 100, this));
     ui->cellHeight->setValidator(new QIntValidator(1, 100, this));
     ui->borderWidth->setValidator(new QIntValidator(1, 100, this));

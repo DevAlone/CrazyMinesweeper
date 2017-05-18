@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include "wongamedialog.h"
 
+// TODO: добавить показ количества оставшихся мин
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)

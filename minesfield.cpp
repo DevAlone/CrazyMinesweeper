@@ -1,6 +1,7 @@
 #include "minesfield.h"
 
 #include <QDebug>
+#include <QTime>
 #include <algorithm>
 #include <ctime>
 #include <queue>
@@ -173,6 +174,9 @@ bool MinesField::getCreated() const
 
 void MinesField::tryToOpenCell(const Point& point)
 {
+    // да, костыль, но перемещать игровую логику в отдельный поток дольше
+    QTime exec_time;
+    exec_time.start();
     if (!created)
         return;
 
@@ -197,9 +201,9 @@ void MinesField::tryToOpenCell(const Point& point)
         return;
     } else {
         std::queue<unsigned> cellsQueue;
-        std::set<unsigned> usedCells;
+        std::vector<unsigned> usedCells;
         cellsQueue.push(cellIndex);
-        usedCells.insert(cellIndex);
+        usedCells.push_back(cellIndex);
 
         while (!cellsQueue.empty()) {
             cellIndex = cellsQueue.front();
@@ -212,13 +216,15 @@ void MinesField::tryToOpenCell(const Point& point)
 
                     for (auto cell : aroundCells) {
                         unsigned index = getCellIndex(cell);
-                        if (usedCells.find(index) == usedCells.end()) {
+                        if (std::find(usedCells.begin(), usedCells.end(), index) == usedCells.end()) {
                             cellsQueue.push(index);
-                            usedCells.insert(index);
+                            usedCells.push_back(index);
                         }
                     }
                 }
             }
+            if (exec_time.elapsed() > 3000)
+                break;
         }
     }
     checkForWin();
