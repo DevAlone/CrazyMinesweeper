@@ -11,6 +11,13 @@
 #include <QWidget>
 #include <QtWidgets>
 
+struct Viewport {
+    long long x, y;
+    long width, height;
+    long start_col, start_row;
+    long cols, rows;
+};
+
 class MinesFieldWidgetUpdaterThread;
 
 class MinesFieldWidget : public QWidget {
@@ -38,6 +45,8 @@ public:
 
     Point getCellByMousePoint(const QPoint& mousePoint);
     Point convertCellPointToAbsolute(const Point& point);
+    Viewport getViewport() const;
+
 signals:
 
 public slots:
@@ -66,14 +75,6 @@ private:
     QColor getCellColor(Cell::CellState cellState, int minesAroundCell);
 
     QPixmap pixmap;
-
-    struct Viewport {
-        long long x, y;
-        long width, height;
-        long start_col, start_row;
-        long cols, rows;
-    };
-
     Viewport viewport;
 
     QSize cellSize;

@@ -47,7 +47,7 @@ void MinesFieldWidgetUpdaterThread::run()
             auto& cells = minesFieldWidget->field->getCells();
             const Cell& cell = cells.at(i);
 
-            int minesAroundCell = cell.minesAround(); // TODO: ?
+            int minesAroundCell = cell.minesAround();
             QColor color = minesFieldWidget->getCellColor(cell.cellState(), minesAroundCell);
 
             painter.fillRect((x - minesFieldWidget->viewport.start_col) * stepX + minesFieldWidget->borderSize.width(),

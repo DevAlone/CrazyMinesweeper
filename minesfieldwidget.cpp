@@ -45,8 +45,7 @@ void MinesFieldWidget::paintEvent(QPaintEvent* event)
         return;
     }
 
-    if (!updatingMutex.tryLock())
-        return;
+    updatingMutex.lock();
 
     painter.drawPixmap(0, 0, pixmap);
 
@@ -288,6 +287,11 @@ QColor MinesFieldWidget::getCellColor(Cell::CellState cellState, int minesAround
         break;
     }
     return color;
+}
+
+Viewport MinesFieldWidget::getViewport() const
+{
+    return viewport;
 }
 
 QSize MinesFieldWidget::getBorderSize() const

@@ -35,14 +35,25 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 bool MainWindow::event(QEvent* event)
 {
     if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
-        // TODO: add checks for out of field and scroll
-        // TODO: change step from 1 pixel size to size of 1 cell
-        // TODO: faster moving
-
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         QPoint cursorPos = cursor().pos();
 
         auto cell = minesFieldWidget->getCellByMousePoint(minesFieldWidget->mapFromGlobal(cursorPos));
+        if (cell.x() <= 0) {
+            cell.setX(0);
+            minesFieldWidget->horizontalScrollPosChanged(-1);
+        } else if (cell.x() > minesFieldWidget->getViewport().cols - 1) {
+            cell.setX(minesFieldWidget->getViewport().cols - 1);
+            minesFieldWidget->horizontalScrollPosChanged(1);
+        }
+        if (cell.y() <= 0) {
+            cell.setY(0);
+            minesFieldWidget->verticalScrollPosChanged(-1);
+        } else if (cell.y() > minesFieldWidget->getViewport().rows - 1) {
+            cell.setY(minesFieldWidget->getViewport().rows - 1);
+            minesFieldWidget->verticalScrollPosChanged(1);
+        }
+
         qDebug() << cursorPos << "?" << cell.x() << ":" << cell.y();
 
         auto stepSize = minesFieldWidget->getCellSize() + minesFieldWidget->getBorderSize();
@@ -52,6 +63,11 @@ bool MainWindow::event(QEvent* event)
         cursorPos = minesFieldWidget->mapToGlobal(cellPos);
 
         auto key = keyEvent->key();
+
+        if (keyEvent->modifiers() & Qt::ControlModifier)
+            stepSize = QSize(stepSize.width() * 2, stepSize.height() * 2);
+        if (keyEvent->modifiers() & Qt::ShiftModifier)
+            stepSize = QSize(stepSize.width() * 4, stepSize.height() * 4);
 
         if (event->type() == QEvent::KeyPress) {
             if (key == Qt::Key_A)
