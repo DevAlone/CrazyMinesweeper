@@ -63,5 +63,4 @@ void MinesFieldWidgetUpdaterThread::run()
     minesFieldWidget->updatingMutex.unlock();
     static int n = 1;
     n++;
-    qDebug() << "thread finished" << n;
 }

@@ -23,6 +23,7 @@ protected:
 public slots:
     void loseGame();
     void wonGame();
+    void markedCellCountChanged();
 private slots:
     void on_actionNew_game_triggered();
 

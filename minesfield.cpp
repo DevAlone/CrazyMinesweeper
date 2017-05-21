@@ -19,7 +19,6 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
     minesLeft = minesCount = rows * cols * minesPercents;
     srand(time(0));
 
-    qDebug() << "start creating field";
     cells = std::vector<Cell>(this->rows * this->cols);
     // генерим мины в первых minesCount элементах массива
     for (unsigned i = 0; i < minesCount; i++) {
@@ -73,7 +72,6 @@ MinesField::MinesField(unsigned rows, unsigned cols, unsigned char mp)
     }
 
     created = true;
-    qDebug() << "finish creating field";
 }
 
 MinesField::~MinesField()
@@ -172,6 +170,11 @@ bool MinesField::getCreated() const
     return created;
 }
 
+unsigned MinesField::getMarkedCells() const
+{
+    return markedCells;
+}
+
 void MinesField::tryToOpenCell(const Point& point)
 {
     // да, костыль, но перемещать игровую логику в отдельный поток дольше
@@ -254,11 +257,18 @@ void MinesField::markCell(const Point& point, Cell::CellState markAs)
     switch (markAs) {
     case Cell::CellState::MarkedAsBomb:
         cell.setCellState(Cell::CellState::MarkedAsBomb);
-        minesLeft--;
+
+        if (cell.isMine())
+            minesLeft--;
+        markedCells++;
+        emit markedCellsCountChanged();
         break;
     case Cell::CellState::MarkedAsQuestion:
         cell.setCellState(Cell::CellState::MarkedAsQuestion);
-        minesLeft++;
+        if (cell.isMine())
+            minesLeft++;
+        markedCells--;
+        emit markedCellsCountChanged();
         break;
     default:
         break;
@@ -286,8 +296,13 @@ void MinesField::unmarkCell(const Point& point)
     if (!(cell.cellState() == Cell::CellState::MarkedAsBomb || cell.cellState() == Cell::CellState::MarkedAsQuestion))
         return;
 
+    if (cell.cellState() == Cell::CellState::MarkedAsBomb) {
+        minesLeft++;
+        markedCells--;
+        emit markedCellsCountChanged();
+    }
+
     cell.setCellState(Cell::CellState::Closed);
-    minesLeft++;
     checkForWin();
 }
 

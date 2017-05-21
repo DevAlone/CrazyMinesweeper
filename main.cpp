@@ -5,8 +5,7 @@
 
 #include <QtWidgets>
 #include <ctime>
-
-// add showing mines left
+// TODO: add hints, for example it will open cells, that marked as question
 int main(int argc, char* argv[])
 {
     srand(time(0));

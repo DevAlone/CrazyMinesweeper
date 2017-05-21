@@ -47,15 +47,19 @@ public:
 
     bool getCreated() const;
 
+    unsigned getMarkedCells() const;
+
 signals:
     void userLost();
     void userWon();
+    void markedCellsCountChanged();
 public slots:
 
 private:
     std::vector<Cell> cells;
     unsigned minesCount = 0;
     int minesLeft = 0;
+    unsigned markedCells = 0;
     unsigned rows;
     unsigned cols;
     double minesPercents = 0;

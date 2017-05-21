@@ -12,7 +12,6 @@ ColorChooseButton::ColorChooseButton(QWidget* parent)
 
 void ColorChooseButton::buttonClicked()
 {
-    qDebug() << "button clicked";
     color = QColorDialog::getColor(color);
     setColor(color);
 }

@@ -4,7 +4,6 @@
 #include "ui_mainwindow.h"
 #include "wongamedialog.h"
 
-// TODO: добавить показ количества оставшихся мин
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -17,8 +16,15 @@ MainWindow::MainWindow(QWidget* parent)
     minesFieldWidget->setCellSize(QSize(25, 25));
     minesFieldWidget->setBorderSize(QSize(0, 0));
 
-    connect(minesField.get(), SIGNAL(userLost()), this, SLOT(loseGame()));
-    connect(minesField.get(), SIGNAL(userWon()), this, SLOT(wonGame()));
+    connect(minesField.get(), SIGNAL(userLost()),
+        this, SLOT(loseGame()));
+    connect(minesField.get(), SIGNAL(userWon()),
+        this, SLOT(wonGame()));
+
+    connect(minesField.get(), SIGNAL(markedCellsCountChanged()),
+        this, SLOT(markedCellCountChanged()));
+
+    markedCellCountChanged();
 }
 
 MainWindow::~MainWindow()
@@ -53,8 +59,6 @@ bool MainWindow::event(QEvent* event)
             cell.setY(minesFieldWidget->getViewport().rows - 1);
             minesFieldWidget->verticalScrollPosChanged(1);
         }
-
-        qDebug() << cursorPos << "?" << cell.x() << ":" << cell.y();
 
         auto stepSize = minesFieldWidget->getCellSize() + minesFieldWidget->getBorderSize();
         QPoint cellPos = QPoint(cell.x() * stepSize.width() + stepSize.width() / 2,
@@ -120,6 +124,11 @@ void MainWindow::wonGame()
     }
 }
 
+void MainWindow::markedCellCountChanged()
+{
+    setWindowTitle(QString("mines left: ") + QString::number(minesField->getMinesCount() - minesField->getMarkedCells()));
+}
+
 //bool MainWindow::event(QEvent* event)
 //{
 // return true;
@@ -146,6 +155,10 @@ void MainWindow::on_actionNew_game_triggered()
 
         connect(minesField.get(), SIGNAL(userLost()), this, SLOT(loseGame()));
         connect(minesField.get(), SIGNAL(userWon()), this, SLOT(wonGame()));
+        connect(minesField.get(), SIGNAL(markedCellsCountChanged()),
+            this, SLOT(markedCellCountChanged()));
+
+        markedCellCountChanged();
 
         minesFieldWidget->setCellSize(data.cellSize);
         minesFieldWidget->setBorderSize(data.borderSize);

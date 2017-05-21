@@ -195,11 +195,10 @@ void MinesFieldWidget::mouseMoveEvent(QMouseEvent* event)
 
 void MinesFieldWidget::updatingThreadFinished()
 {
-    qDebug() << "updating thread finished";
     update();
     if (isUpdatingQueued) {
         isUpdatingQueued = false;
-        thread->start(QThread::HighestPriority); //TODO: do
+        thread->start(QThread::HighestPriority);
     }
 }
 
