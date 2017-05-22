@@ -1,5 +1,6 @@
 body {
 	background-color: #eee;
+	background: url('../img/white_pattern.png') 0 0 repeat;
 }
 body {
 	text-align: center;
@@ -147,7 +148,8 @@ body > * {
 	display: inline-block;
 	width: 30%;
 	margin: 10px 0;
-	box-shadow: 2px 2px 2px #AEAEAE;
+	/*box-shadow: 2px 2px 2px #AEAEAE;*/
+	box-shadow: 3px 3px 3px #AEAEAE;
 	outline: none;
 }
 .content img {
