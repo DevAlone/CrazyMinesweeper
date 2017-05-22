@@ -25,7 +25,7 @@ private slots:
 private:
     Ui::MinesFieldSettingsDialog* ui;
     MinesFieldWidget* minesFieldWidget;
-    MinesFieldWidgetSettings& settings;
+    MinesFieldWidgetSettings* settings;
 };
 
 #endif // MINESFIELDSETTINGSDIALOG_H
