@@ -1,9 +1,18 @@
+<!-- 1. Add latest jQuery and fancyBox files -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>CrazyMinesweeper</title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="css/style.css" >
+	<link rel="stylesheet" href="css/style.css">
+
+	<script src="js/jquery-3.2.1.min.js"></script>
+
+<link rel="stylesheet" href="css/jquery.fancybox.min.css" />
+<script src="js/jquery.fancybox.min.js"></script>
+
 </head>
 <body>
 	<div class="header blocks_shadow">
@@ -18,15 +27,39 @@
 			</div>
 		</div>
 	</div>
+	<div class="info blocks_shadow">
+		<p>
+		Вы когда-нибудь играли в сапёра с полем 1000x1000? Теперь вы можете! Но не только это отличает мою игру от классического сапёра из Windows. Основная фишка - использование разных оттенков цвета(по дефолту зелёного) для определения количества мин вокруг ячейки, светло зелёный - 1 мина, чуть темнее - 2 и всё в таком духе. 
+		</p>
+	</div>
 	<div class="content">
-		
-			<img src="img/screenshots/4.png">
-			<img src="img/screenshots/6.png">
-			<img src="img/screenshots/7.png">
-			<img src="img/screenshots/8.png">
-			<img src="img/screenshots/1.png">
-			<img src="img/screenshots/2.png">
-			<img src="img/screenshots/3.png">
+			<a data-fancybox="gallery" href="img/screenshots/4.png"><img src="img/screenshots/4.png"></a>
+			<a data-fancybox="gallery" href="img/screenshots/8.png"><img src="img/screenshots/8.png"></a>
+			<a data-fancybox="gallery" href="img/screenshots/1.png"><img src="img/screenshots/1.png"></a>
+			<a data-fancybox="gallery" href="img/screenshots/2.png"><img src="img/screenshots/2.png"></a>
+			<a data-fancybox="gallery" href="img/screenshots/3.png"><img src="img/screenshots/3.png"></a>
+			<a data-fancybox="gallery" href="img/screenshots/6.png"><img src="img/screenshots/6.png"></a>
+			<a data-fancybox="gallery" href="img/screenshots/7.png"><img src="img/screenshots/7.png"></a>
+	</div>
+	<div class="info blocks_shadow">
+		<p>
+		Как в это играть, резонно спросите Вы? Точно так же, как в обычный сапёр!
+		</p>
+		<p>
+		Напомню, в оригинальной реализации цифры показывают, сколько мин находится вокруг ячейки, зная эту информацию, можно определять где эти самые мины находятся, отмечая их кликом  правой кнопкой мыши. Например, если в данной ячейке цифра 1 и вокруг неё только одна закрытая, то, очевидно, мина там. Здесь всё тоже самое. Найдя мину, нажмите ПКМ по ячейке, её цвет станет красным - это значит что ячейка отмечена, если нажать ещё раз ячейка станет жёлтой - это значит, что неизвестно, если ли там мина, в будущем я планирую добавить подсказки, которые будут позволять определить мину в тех случаях, когда это не может сделать игрок.
+		</p>
+		<p> 
+		Игра завершается успешно, когда отмечены все ячейки с минами и открыты все ячейки без мин. Если вы попытаетесь открыть ячейку с миной, вы проиграете :(
+		</p>
+		<p>
+		Если вы по какой-то причине не любите зелёный цвет, вы всегда можете изменить его в настройках, так же как и цвет фона, границы, отмеченной ячейки и всего остального.
+		</p>
+		<p>
+		Также в игре присутствует возможность управления с помощью клавиатуры. Для передвижения курсора по ячейкам используйте клавиши WASD, для того, чтобы отметить мину - E, для того, чтобы открыть ячейку - Q, для того, чтобы открыть ячейки рядом с пустой - Tab(сработает только, если вокруг данной ячейки правильно отмечены мины, в противном случае вы проиграете). 
+		</p>
+		<p>
+		Удачной игры!
+		</p>
 	</div>
 	<div class="footer">
 		<div class="wrapper">
