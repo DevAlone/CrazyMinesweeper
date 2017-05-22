@@ -70,6 +70,10 @@ body > * {
 	width: 100%;
 	padding: 15px 0;
 }
+.header .buttons a {
+	font-size: 20px;
+	padding: 10px 15px;
+}
 .header .floating_block span {
 	font-size: 32px;
 	color: #fff;
