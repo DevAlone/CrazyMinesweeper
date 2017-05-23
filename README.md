@@ -8,7 +8,7 @@ git clone https://github.com/DevAlone/CrazyMinesweeper
 cd CrazyMinesweeper/
 qmake
 make
-./minesweeper # to start game
+./minesweeper # to start a game
 ```
 
 Здесь вы можете скачать версию под windows и linux https://devalone.github.io/CrazyMinesweeper/
